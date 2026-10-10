@@ -1,0 +1,37 @@
+645 município(s)
+locais carregados: {2022: 10842, 2024: 11014, 2026: 11079}
+   votos por seção 2022 DEPUTADO ESTADUAL: 8,465,840 linhas, 7,487,054 com candidato identificado
+   votos por seção 2022 DEPUTADO FEDERAL: 8,161,347 linhas, 7,496,816 com candidato identificado
+   votos por seção 2022 GOVERNADOR: 1,201,986 linhas, 798,044 com candidato identificado
+   votos por seção 2022 SENADOR: 932,309 linhas, 730,194 com candidato identificado
+   votos por seção 2024 PREFEITO: 872,990 linhas, 577,860 com candidato identificado
+   votos por seção 2024 VEREADOR: 8,738,268 linhas, 7,912,670 com candidato identificado
+   votos por seção 2026 DEPUTADO ESTADUAL: 7,912,959 linhas, 6,970,182 com candidato identificado
+   votos por seção 2026 DEPUTADO FEDERAL: 7,401,888 linhas, 6,791,825 com candidato identificado
+   votos por seção 2026 GOVERNADOR: 579,514 linhas, 372,389 com candidato identificado
+   votos por seção 2026 SENADOR: 1,149,273 linhas, 941,979 com candidato identificado
+   2024 vereador turno 1: 645 municípios | locais com voto casados com o cadastro de locais: 10,991 de 11,015
+   2024 vereador turno 2: sem linhas no banco
+   2024 prefeito turno 1: 645 municípios | locais com voto casados com o cadastro de locais: 10,991 de 11,015
+   2024 prefeito turno 2: 18 municípios | locais com voto casados com o cadastro de locais: 3,855 de 3,865
+   2022 federal turno 1: 645 municípios | locais com voto casados com o cadastro de locais: 10,811 de 10,846
+   2022 federal turno 2: sem linhas no banco
+   2022 estadual turno 1: 645 municípios | locais com voto casados com o cadastro de locais: 10,811 de 10,846
+   2022 estadual turno 2: sem linhas no banco
+   2026 federal turno 1: 645 municípios | locais com voto casados com o cadastro de locais: 11,032 de 11,079
+   2026 federal turno 2: sem linhas no banco
+   2026 estadual turno 1: 645 municípios | locais com voto casados com o cadastro de locais: 11,032 de 11,079
+   2026 estadual turno 2: sem linhas no banco
+
+=== Qualidade dos locais de votação ===
+2022: 10,842 locais | 101,628 seções | 34,667,793 eleitores
+      coordenada 95.9% | bairro 100.0% | CEP 100.0% | perfil casado 98.9%
+2024: 11,014 locais | 103,021 seções | 34,403,609 eleitores
+      coordenada 96.0% | bairro 100.0% | CEP 100.0% | perfil casado 99.3%
+2026: 11,079 locais | 103,904 seções | 34,104,226 eleitores
+      coordenada 99.4% | bairro 100.0% | CEP 100.0% | perfil casado 99.1%
+
+territorio: 645 municípios, 23.6 MB | micro: 645 municípios, 17.1 MB
+maiores (micro): [('São Paulo', 2.6), ('Campinas', 0.3), ('Guarulhos', 0.3)]
+Osasco 2024: 131 locais | bairros 75 | blocos de votos: {'2024': ['vereador1', 'prefeito1'], '2022': ['federal1', 'estadual1'], '2026': ['federal1', 'estadual1']}
+Barueri 2024: 64 locais | bairros 37 | blocos de votos: {'2024': ['vereador1', 'prefeito1', 'prefeito2'], '2022': ['federal1', 'estadual1'], '2026': ['federal1', 'estadual1']}

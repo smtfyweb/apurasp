@@ -1,0 +1,40 @@
+---
+import Base from '../layouts/Base.astro';
+const hoje = new Date().toLocaleDateString('pt-BR');
+---
+<Base titulo="Metodologia | ApuraSP" atual="metodologia" descricao="Fontes, tratamento e limites dos dados do ApuraSP.">
+  <main style="max-width: 820px">
+    <h1>Como os dados foram tratados</h1>
+    <p class="fonte">Site gerado em {hoje}.</p>
+
+    <h2 style="margin-top:2rem">De onde vêm os números</h2>
+    <ul class="lista-fixa leitura">
+      <li>Eleições de 2022, 2024 e 2026: dados abertos do Tribunal Superior Eleitoral (candidatos, perfil do eleitorado, votação por candidato, por partido e por município e zona).</li>
+      <li>Os votos de 2026 vêm do arquivo de votação por município e zona, com última totalização registrada em 04/10/2026, às 22h47. O total de votos válidos para deputado estadual em São Paulo (23.290.014) e a apuração da capital batem com os números publicados pelo TSE.</li>
+      <li>População, área, densidade e PIB: IBGE (Censo 2022 e PIB dos municípios). O valor adicionado por setor usa o ano mais recente com detalhamento.</li>
+      <li>Bandeiras e brasões: Wikidata e Wikimedia Commons. Só entram imagens com licença livre ou em domínio público, com autor e licença na página de <a href="../creditos/">créditos</a>.</li>
+    </ul>
+
+    <h2 style="margin-top:2rem">O que o espectro político mede</h2>
+    <p class="leitura">A posição de cada partido vem da classificação de especialistas de Bolognesi, Ribeiro, Codato e Silva (2025), publicada na revista Opinião Pública, v. 31, e31120. São notas de 0 (extrema-esquerda) a 10 (extrema-direita), dadas por cientistas políticos em 2022.</p>
+    <div class="aviso">
+      <p>A classificação é de 2022 e, segundo os próprios autores, não deve ser projetada para outros anos. Ela rotula a legenda: quando um candidato troca de partido, os votos dele mudam de campo sem que nenhum eleitor tenha mudado de opinião. As faixas (extrema-esquerda, direita etc.) são apenas uma agregação numérica das notas e não dizem nada sobre a atuação do partido.</p>
+    </div>
+    <ul class="lista-fixa leitura">
+      <li>PRD, criado em 2023 pela fusão de PTB e Patriota, não existia na pesquisa. A nota é a média dos dois, pela regra de fusão do próprio artigo, e deve ser lida como estimativa.</li>
+      <li>MISSÃO e DEMOCRATA não foram classificados e aparecem como “sem classificação”.</li>
+      <li>Nas faixas, PSD e Republicanos ficam numa categoria acima da que a média bruta indicaria, porque o artigo usa a média ponderada pelos resultados de 2018.</li>
+    </ul>
+
+    <h2 style="margin-top:2rem">O que o site não publica</h2>
+    <p class="leitura">CPF, e-mail, título de eleitor e data de nascimento de candidatos ficam de fora. O site mostra apenas totais por município e os nomes de candidatos votados e eleitos, que são informações públicas.</p>
+
+    <h2 style="margin-top:2rem">Limites</h2>
+    <ul class="lista-fixa leitura">
+      <li>Os percentuais de deputados são sobre os votos válidos do cargo no município.</li>
+      <li>“Eleito(a)” ao lado de um deputado indica o resultado no estado.</li>
+      <li>A vereança considera a eleição de 2024. Mudanças de mandato depois disso não estão refletidas.</li>
+      <li>O perfil de cor ou raça do eleitorado depende da declaração no cadastro, e parte dos eleitores aparece como “não informado”.</li>
+    </ul>
+  </main>
+</Base>

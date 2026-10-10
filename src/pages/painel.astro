@@ -1,0 +1,312 @@
+---
+import Base from '../layouts/Base.astro';
+import { BASE } from '../lib/url';
+const dimensoes = [['genero', 'Gênero'], ['faixa', 'Faixa etária'], ['escolaridade', 'Escolaridade'], ['estado_civil', 'Estado civil'], ['raca', 'Cor ou raça']];
+---
+<Base titulo="Painel do eleitorado | ApuraSP" atual="painel" descricao="Perfil dos eleitores de cada município de São Paulo: idade, gênero, escolaridade, cor ou raça e cruzamentos.">
+  <main id="app-painel" data-base={BASE}>
+    <h1>Painel do eleitorado</h1>
+    <p class="leitura" style="margin-top:.6rem">Quem vota em cada município de São Paulo, comparado com o estado. Escolha o município e a eleição, veja os recortes e monte seus cruzamentos.</p>
+
+    <div class="linha-controles" style="margin-top:1.2rem">
+      <div>
+        <label for="pn-mun">Município</label>
+        <input id="pn-mun" type="text" list="pn-lista" data-opcao-vazia="Estado de São Paulo" autocomplete="off" placeholder="Estado de São Paulo" />
+        <datalist id="pn-lista"></datalist>
+      </div>
+      <div>
+        <label for="pn-ano">Eleição</label>
+        <select id="pn-ano"><option value="2026" selected>2026</option><option value="2024">2024</option><option value="2022">2022</option></select>
+      </div>
+      <div><a id="pn-ficha" class="abrir sec" href="#" hidden>Abrir a ficha do município</a></div>
+    </div>
+    <p id="pn-aviso" class="fonte" role="status"></p>
+
+    <dl id="pn-kpi" class="grade"></dl>
+    <div id="pn-paineis" class="pn-grade"></div>
+
+    <section id="pn-cruz" class="pn-painel" aria-labelledby="h-cruz" tabindex="-1">
+      <header class="pn-barra">
+        <h2 id="h-cruz">Cruzamento e tabela</h2>
+        <div class="pn-acoes">
+          <button type="button" id="pn-csv"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></svg> Baixar CSV</button>
+        </div>
+      </header>
+      <div class="pn-corpo">
+        <div class="linha-controles">
+          <div><label for="pn-a">Linhas</label>
+            <select id="pn-a">{dimensoes.map(([v, r]) => <option value={v} selected={v === 'faixa'}>{r}</option>)}</select></div>
+          <div><label for="pn-b">Colunas</label>
+            <select id="pn-b"><option value="nenhum">Nenhuma, só as linhas</option>{dimensoes.map(([v, r]) => <option value={v} selected={v === 'genero'}>{r}</option>)}</select></div>
+          <div><label for="pn-med">Mostrar</label>
+            <select id="pn-med">
+              <option value="num">Número de eleitores</option>
+              <option value="linha">Percentual da linha</option>
+              <option value="coluna">Percentual da coluna</option>
+              <option value="total">Percentual do total</option>
+            </select></div>
+        </div>
+        <div class="rolagem"><table id="pn-tab" class="tabela pn-tab"></table></div>
+        <p class="fonte" id="pn-tab-nota"></p>
+      </div>
+    </section>
+    <p class="fonte">Fonte: perfil do eleitorado, TSE. Comparação com o total do estado de São Paulo na mesma eleição.</p>
+  </main>
+</Base>
+
+<script>
+  import { cap } from '../lib/fmt';
+import { melhorarCaixas } from '../lib/combobox';
+import { melhorarSeletores } from '../lib/seletor';
+melhorarCaixas();
+melhorarSeletores();
+
+  const DIMS = ['genero', 'faixa', 'escolaridade', 'estado_civil', 'raca'];
+  const ROT: Record<string, string> = { genero: 'Gênero', faixa: 'Faixa etária', escolaridade: 'Escolaridade', estado_civil: 'Estado civil', raca: 'Cor ou raça' };
+  const AJUDA: Record<string, string> = {
+    genero: 'Gênero registrado no cadastro eleitoral. “Não informado” indica campo sem preenchimento.',
+    faixa: 'Faixa etária segundo o cadastro eleitoral. “Inválida” indica data de nascimento inconsistente. O voto é facultativo aos 16 e 17 anos, aos 70 anos ou mais e para quem não sabe ler e escrever.',
+    escolaridade: 'Grau de instrução declarado pelo eleitor ao se cadastrar ou atualizar o cadastro. Pode estar desatualizado em cadastros antigos.',
+    estado_civil: 'Estado civil declarado no cadastro. Também pode estar desatualizado.',
+    raca: 'Cor ou raça autodeclarada no cadastro eleitoral. A declaração é voluntária e relativamente recente, então a parcela “não informado” costuma ser grande. Olhe essa proporção antes de comparar municípios.',
+  };
+  const svg = (p: string) => `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+  const IC = {
+    tabela: svg('<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M12 3v18"/>'),
+    info: svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>'),
+  };
+
+  const raiz = document.getElementById('app-painel') as HTMLElement;
+  const base = raiz.dataset.base ?? '/';
+  const $ = (id: string) => document.getElementById(id) as HTMLElement;
+  const n0 = (x: number) => Math.round(x).toLocaleString('pt-BR');
+  const d1 = (x: number) => x.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  const csvNum = (x: number) => x.toFixed(1).replace('.', ',');
+  const soma = (v: number[]) => v.reduce((s, x) => s + x, 0);
+  const sem = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('pt-BR').trim();
+  const rot = (dim: string, s: string) => (dim === 'faixa' ? s : cap(s));
+  const esc = (s: unknown) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } as Record<string, string>)[c]);
+
+  let dims: any = {}, estado: any = {}, lista: { ibge: string; nome: string }[] = [];
+  const cache: Record<string, any> = {};
+  const st = { ibge: '', ano: '2026' };
+  let csvAtual = '', csvNome = 'apurasp.csv';
+
+  const territorio = () => (st.ibge ? lista.find((m) => m.ibge === st.ibge)?.nome ?? 'Município' : 'Estado de São Paulo');
+  const dado = () => (st.ibge ? cache[st.ibge]?.[st.ano] : estado[st.ano]);
+
+  function matriz(d: any, a: string, b: string, ano: string): number[][] {
+    const na = dims[ano][a].length, nb = dims[ano][b].length;
+    const out = Array.from({ length: na }, () => new Array(nb).fill(0));
+    const k1 = `${a}|${b}`, k2 = `${b}|${a}`;
+    if (d.m[k1]) { for (let i = 0; i < na; i++) for (let j = 0; j < nb; j++) out[i][j] = d.m[k1][i * nb + j]; }
+    else if (d.m[k2]) { for (let i = 0; i < na; i++) for (let j = 0; j < nb; j++) out[i][j] = d.m[k2][j * na + i]; }
+    return out;
+  }
+
+  function kpis(d: any, e: any, ano: string) {
+    const comp = !!st.ibge, t = d.t || 1;
+    const fi = (dims[ano].genero as string[]).findIndex((s) => /^FEM/i.test(s));
+    const fem = fi >= 0 ? d.m.genero[fi] : 0, efem = fi >= 0 ? e.m.genero[fi] : 0;
+    const item = (r: string, v: string, ref: string) => `<div><dt>${r}</dt><dd>${v}${ref ? `<small>${ref}</small>` : ''}</dd></div>`;
+    return item('Eleitores', n0(d.t), comp ? `${d1((100 * d.t) / e.t)}% do estado` : '') +
+      item('Mulheres', `${d1((100 * fem) / t)}%`, comp ? `SP ${d1((100 * efem) / e.t)}%` : '') +
+      item('Com biometria', `${d1((100 * d.b) / t)}%`, comp ? `SP ${d1((100 * e.b) / e.t)}%` : '') +
+      item('Com deficiência', `${d1((100 * d.d) / t)}%`, comp ? `SP ${d1((100 * e.d) / e.t)}%` : '');
+  }
+
+  function avisoRaca(dim: string, cats: string[], p: number[], ano: string): string {
+    if (dim !== 'raca') return '';
+    const k = cats.findIndex((c) => /^N[ÃA]O INFORMAD/i.test(c));
+    const pni = k >= 0 ? p[k] : 0;
+    if (pni < 50) return '';
+    const msg = pni >= 99.9
+      ? `No arquivo de ${ano} todos os eleitores aparecem sem cor ou raça informada, então este recorte não tem o que mostrar.`
+      : `${d1(pni)}% dos eleitores aparecem sem cor ou raça informada. Use este recorte com cautela: quem declarou pode não representar o conjunto.`;
+    return `<div class="aviso"><p>${msg}</p></div>`;
+  }
+
+  function barras(dim: string, d: any, e: any, ano: string): string {
+    const cats = dims[ano][dim] as string[], v = d.m[dim] as number[], ev = e.m[dim] as number[];
+    const t = soma(v) || 1, et = soma(ev) || 1, comp = !!st.ibge;
+    const p = v.map((x) => (100 * x) / t), ep = ev.map((x) => (100 * x) / et);
+    const teto = Math.max(1, ...p, ...(comp ? ep : [0]));
+    const itens = cats.map((c, i) => {
+      if (!v[i] && !(comp && ev[i])) return '';
+      const marca = comp ? `<i class="ref-estado" style="left:${(ep[i] / teto) * 100}%" title="Estado: ${d1(ep[i])}%"></i>` : '';
+      const nota = comp ? `<small>SP ${d1(ep[i])}%</small>` : '';
+      return `<li><span class="rot">${esc(rot(dim, c))}</span><span class="trilha"><span class="preenche" style="width:${(p[i] / teto) * 100}%"></span>${marca}</span><span class="val">${d1(p[i])}%${nota}</span></li>`;
+    }).join('');
+    return avisoRaca(dim, cats, p, ano) + `<ul class="barras pn-barras">${itens}</ul>` + (comp ? '<p class="pequena"><i class="marca-leg"></i>Traço laranja: proporção no estado.</p>' : '');
+  }
+
+  function rosca(d: any, ano: string): string {
+    const cats = dims[ano].genero as string[], v = d.m.genero as number[], t = soma(v) || 1;
+    const cor = (c: string) => (/^FEM/i.test(c) ? '#0F8B8D' : /^MASC/i.test(c) ? '#3D4F8F' : '#9AA5B5');
+    let acc = 0;
+    const segs = cats.map((c, i) => {
+      const p = (100 * v[i]) / t;
+      const s = p > 0 ? `<circle cx="21" cy="21" r="15.9155" fill="none" stroke="${cor(c)}" stroke-width="6" stroke-dasharray="${p} ${100 - p}" stroke-dashoffset="${25 - acc}"><title>${esc(cap(c))}: ${n0(v[i])} (${d1(p)}%)</title></circle>` : '';
+      acc += p; return s;
+    }).join('');
+    const leg = cats.map((c, i) => (v[i] ? `<li><i style="background:${cor(c)}"></i>${esc(cap(c))}: ${n0(v[i])} (${d1((100 * v[i]) / t)}%)</li>` : '')).join('');
+    const desc = cats.map((c, i) => (v[i] ? `${cap(c)} ${d1((100 * v[i]) / t)}%` : '')).filter(Boolean).join(', ');
+    return `<div class="rosca"><svg viewBox="0 0 42 42" role="img" aria-label="Gênero do eleitorado: ${esc(desc)}"><circle cx="21" cy="21" r="15.9155" fill="none" stroke="#DDE2E9" stroke-width="6"/>${segs}</svg><ul class="chips">${leg}</ul></div>`;
+  }
+
+  function piramide(d: any, ano: string): string {
+    const M = matriz(d, 'genero', 'faixa', ano);
+    const g = (dims[ano].genero as string[]).map((s) => s.toUpperCase());
+    const fi = g.indexOf('FEMININO'), mi = g.indexOf('MASCULINO');
+    const fx = dims[ano].faixa as string[];
+    const f = fx.map((_, j) => (fi >= 0 ? M[fi][j] : 0)), m = fx.map((_, j) => (mi >= 0 ? M[mi][j] : 0));
+    const tf = soma(f), tm = soma(m), t = tf + tm || 1;
+    const ordem = fx.map((_, i) => i).filter((i) => !/inv/i.test(fx[i])).reverse();
+    const teto = Math.max(1, ...f, ...m);
+    const linhas = ordem.map((i) =>
+      `<div class="pir-linha"><span class="pir-lado pir-f"><i style="width:${(f[i] / teto) * 100}%;background:#0F8B8D" title="Feminino: ${n0(f[i])}"></i></span><span class="pir-r">${esc(fx[i])}</span><span class="pir-lado"><i style="width:${(m[i] / teto) * 100}%;background:#3D4F8F" title="Masculino: ${n0(m[i])}"></i></span></div>`).join('');
+    return `<div class="pir" role="img" aria-label="Pirâmide etária: ${d1((100 * tf) / t)}% de mulheres e ${d1((100 * tm) / t)}% de homens">${linhas}</div>
+      <div class="pir-leg"><span><i class="sw" style="background:#0F8B8D"></i>Feminino: ${n0(tf)}</span><span><i class="sw" style="background:#3D4F8F"></i>Masculino: ${n0(tm)}</span></div>`;
+  }
+
+  function paineis(d: any, e: any, ano: string): string {
+    const bloco = (id: string, tit: string, dim: string, corpo: string, b = 'nenhum') =>
+      `<section class="pn-painel" id="pn-${id}"><header class="pn-barra"><h3>${tit}</h3><div class="pn-acoes">` +
+      `<button type="button" data-cruz="${dim}" data-cruz-b="${b}">${IC.tabela} Cruzamento</button>` +
+      `<button type="button" data-info="1" aria-expanded="false">${IC.info} Saiba mais</button></div></header>` +
+      `<div class="pn-corpo">${corpo}</div><p class="pn-saiba" hidden>${esc(AJUDA[dim])}</p></section>`;
+    return bloco('gen', 'Gênero', 'genero', rosca(d, ano), 'faixa') +
+      bloco('fx', 'Faixa etária', 'faixa', barras('faixa', d, e, ano)) +
+      bloco('pir', 'Pirâmide etária', 'faixa', piramide(d, ano), 'genero') +
+      bloco('esc', 'Escolaridade', 'escolaridade', barras('escolaridade', d, e, ano)) +
+      bloco('rc', 'Cor ou raça', 'raca', barras('raca', d, e, ano)) +
+      bloco('ec', 'Estado civil', 'estado_civil', barras('estado_civil', d, e, ano));
+  }
+
+  function tabela() {
+    const ano = st.ano, d = dado(), e = estado[ano];
+    if (!d) { $('pn-tab').innerHTML = ''; return; }
+    const a = ($('pn-a') as HTMLSelectElement).value;
+    let b = ($('pn-b') as HTMLSelectElement).value;
+    if (b === a) b = 'nenhum';
+    const med = ($('pn-med') as HTMLSelectElement).value;
+    const ca = dims[ano][a] as string[];
+    const T: string[][] = [], C: string[][] = [];
+    const terr = territorio();
+
+    if (b === 'nenhum') {
+      const v = d.m[a] as number[], ev = e.m[a] as number[], t = soma(v) || 1, et = soma(ev) || 1, comp = !!st.ibge;
+      T.push([ROT[a], 'Eleitores', `% em ${terr}`, ...(comp ? ['% no estado', 'Diferença (p.p.)'] : [])]);
+      C.push([ROT[a], 'Eleitores', `Percentual em ${terr}`, ...(comp ? ['Percentual no estado', 'Diferenca em pontos percentuais'] : [])]);
+      ca.forEach((c, i) => {
+        if (!v[i] && !(comp && ev[i])) return;
+        const p = (100 * v[i]) / t, ep = (100 * ev[i]) / et, df = p - ep;
+        T.push([rot(a, c), n0(v[i]), `${d1(p)}%`, ...(comp ? [`${d1(ep)}%`, `${df > 0 ? '+' : ''}${d1(df)}`] : [])]);
+        C.push([rot(a, c), String(v[i]), csvNum(p), ...(comp ? [csvNum(ep), csvNum(df)] : [])]);
+      });
+      T.push(['Total', n0(t), '100,0%', ...(comp ? ['100,0%', ''] : [])]);
+      C.push(['Total', String(t), '100,0', ...(comp ? ['100,0', ''] : [])]);
+    } else {
+      const cb = dims[ano][b] as string[];
+      const M = matriz(d, a, b, ano);
+      const rt = M.map((r) => soma(r)), ct = cb.map((_, j) => soma(M.map((r) => r[j]))), G = soma(rt) || 1;
+      const un = med === 'num' ? 'eleitores' : med === 'linha' ? '% da linha' : med === 'coluna' ? '% da coluna' : '% do total';
+      const f = (v: number, rT: number, cT: number): [string, string] => {
+        if (med === 'num') return [n0(v), String(v)];
+        const den = med === 'linha' ? rT : med === 'coluna' ? cT : G;
+        const p = den ? (100 * v) / den : 0;
+        return [`${d1(p)}%`, csvNum(p)];
+      };
+      const colsOk = cb.map((_, j) => j).filter((j) => ct[j] > 0);
+      T.push([`${ROT[a]} \\ ${ROT[b]}`, ...colsOk.map((j) => rot(b, cb[j])), 'Total']);
+      C.push([`${ROT[a]} por ${ROT[b]} (${un})`, ...colsOk.map((j) => rot(b, cb[j])), 'Total']);
+      ca.forEach((c, i) => {
+        if (!rt[i]) return;
+        const cel = colsOk.map((j) => f(M[i][j], rt[i], ct[j]));
+        const tt = f(rt[i], rt[i], G);
+        T.push([rot(a, c), ...cel.map((x) => x[0]), tt[0]]); C.push([rot(a, c), ...cel.map((x) => x[1]), tt[1]]);
+      });
+      const cel = colsOk.map((j) => f(ct[j], G, ct[j])), tt = f(G, G, G);
+      T.push(['Total', ...cel.map((x) => x[0]), tt[0]]); C.push(['Total', ...cel.map((x) => x[1]), tt[1]]);
+    }
+
+    const [cab, ...corpo] = T;
+    $('pn-tab').innerHTML = `<thead><tr>${cab.map((h) => `<th scope="col">${esc(h)}</th>`).join('')}</tr></thead><tbody>` +
+      corpo.map((l, k) => `<tr${k === corpo.length - 1 ? ' class="tot"' : ''}><th scope="row">${esc(l[0])}</th>${l.slice(1).map((c) => `<td>${esc(c)}</td>`).join('')}</tr>`).join('') + '</tbody>';
+    $('pn-tab-nota').textContent = `${terr}, eleição de ${ano}. ${b === 'nenhum' ? '' : 'Percentuais calculados sobre o total de eleitores de cada recorte.'}`.trim();
+    const q = (s: string) => (/[;"\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s);
+    csvAtual = C.map((l) => l.map(q).join(';')).join('\n');
+    csvNome = `apurasp_${sem(terr).replace(/\s+/g, '-')}_${ano}_${a}${b !== 'nenhum' ? '_x_' + b : ''}.csv`;
+  }
+
+  function sincronizarUrl() {
+    const p = new URLSearchParams();
+    if (st.ibge) p.set('m', st.ibge);
+    p.set('a', st.ano);
+    p.set('l', ($('pn-a') as HTMLSelectElement).value);
+    p.set('c', ($('pn-b') as HTMLSelectElement).value);
+    p.set('x', ($('pn-med') as HTMLSelectElement).value);
+    history.replaceState(null, '', `?${p.toString()}`);
+  }
+
+  async function atualizar() {
+    $('pn-aviso').textContent = '';
+    if (st.ibge && !cache[st.ibge]) {
+      try { cache[st.ibge] = await (await fetch(`${base}data/painel/${st.ibge}.json`)).json(); }
+      catch { $('pn-aviso').textContent = 'Não foi possível carregar os dados deste município. Recarregue a página.'; return; }
+    }
+    const d = dado(), e = estado[st.ano];
+    const ficha = $('pn-ficha') as HTMLAnchorElement;
+    if (st.ibge) { ficha.hidden = false; ficha.href = `${base}municipio/${st.ibge}/`; ficha.textContent = `Abrir a ficha de ${territorio()}`; } else ficha.hidden = true;
+    if (!d) {
+      $('pn-kpi').innerHTML = ''; $('pn-paineis').innerHTML = ''; $('pn-tab').innerHTML = '';
+      $('pn-aviso').textContent = `Sem dados de perfil do eleitorado para ${territorio()} em ${st.ano}. Escolha outra eleição.`;
+      return;
+    }
+    $('pn-kpi').innerHTML = kpis(d, e, st.ano);
+    $('pn-paineis').innerHTML = paineis(d, e, st.ano);
+    tabela(); sincronizarUrl();
+    document.title = `${territorio()}: painel do eleitorado | ApuraSP`;
+  }
+
+  async function iniciar() {
+    try {
+      const [dm, es, ls] = await Promise.all(['data/painel/dims.json', 'data/painel/estado.json', 'data/municipios.json'].map((u) => fetch(base + u).then((r) => r.json())));
+      dims = dm; estado = es; lista = ls;
+    } catch { $('pn-aviso').textContent = 'Não foi possível carregar os dados do painel. Recarregue a página.'; return; }
+    $('pn-lista').innerHTML = lista.map((m) => `<option value="${esc(m.nome)}"></option>`).join('');
+    const p = new URLSearchParams(location.search);
+    if (p.get('m') && lista.some((m) => m.ibge === p.get('m'))) { st.ibge = p.get('m') as string; ($('pn-mun') as HTMLInputElement).value = territorio(); }
+    if (p.get('a') && estado[p.get('a') as string]) { st.ano = p.get('a') as string; ($('pn-ano') as HTMLSelectElement).value = st.ano; }
+    if (p.get('l') && DIMS.includes(p.get('l') as string)) ($('pn-a') as HTMLSelectElement).value = p.get('l') as string;
+    if (p.get('c')) ($('pn-b') as HTMLSelectElement).value = p.get('c') as string;
+    if (p.get('x')) ($('pn-med') as HTMLSelectElement).value = p.get('x') as string;
+
+    $('pn-mun').addEventListener('change', () => {
+      const v = ($('pn-mun') as HTMLInputElement).value;
+      if (!v.trim()) { st.ibge = ''; atualizar(); return; }
+      const m = lista.find((x) => sem(x.nome) === sem(v));
+      if (m) { st.ibge = m.ibge; atualizar(); }
+    });
+    $('pn-ano').addEventListener('change', () => { st.ano = ($('pn-ano') as HTMLSelectElement).value; atualizar(); });
+    ['pn-a', 'pn-b', 'pn-med'].forEach((id) => $(id).addEventListener('change', () => { tabela(); sincronizarUrl(); }));
+    $('pn-paineis').addEventListener('click', (ev) => {
+      const bt = (ev.target as HTMLElement).closest('button') as HTMLButtonElement | null;
+      if (!bt) return;
+      if (bt.dataset.cruz) {
+        ($('pn-a') as HTMLSelectElement).value = bt.dataset.cruz;
+        ($('pn-b') as HTMLSelectElement).value = bt.dataset.cruzB ?? 'nenhum';
+        tabela(); sincronizarUrl(); $('pn-cruz').scrollIntoView({ block: 'start' }); $('pn-cruz').focus();
+      } else if (bt.dataset.info) {
+        const txt = bt.closest('.pn-painel')?.querySelector('.pn-saiba') as HTMLElement;
+        const abre = txt.hidden; txt.hidden = !abre; bt.setAttribute('aria-expanded', String(abre));
+      }
+    });
+    $('pn-csv').addEventListener('click', () => {
+      const url = URL.createObjectURL(new Blob(['\uFEFF' + csvAtual], { type: 'text/csv;charset=utf-8' }));
+      const a = document.createElement('a'); a.href = url; a.download = csvNome; a.click(); URL.revokeObjectURL(url);
+    });
+    await atualizar();
+  }
+  iniciar();
+</script>

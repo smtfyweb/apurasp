@@ -1,0 +1,186 @@
+candidatos-1933 | Candidatos - 1933 | 3 arq | - | 2022-10-27
+candidatos-1934 | Candidatos - 1934 | 3 arq | - | 2022-10-27
+candidatos-1945 | Candidatos - 1945 | 2 arq | - | 2022-10-27
+candidatos-1947 | Candidatos - 1947 | 2 arq | - | 2022-10-27
+candidatos-1950 | Candidatos - 1950 | 2 arq | - | 2022-10-27
+candidatos-1954 | Candidatos - 1954 | 2 arq | - | 2022-10-27
+candidatos-1955 | Candidatos - 1955 | 2 arq | - | 2022-10-27
+candidatos-1958 | Candidatos - 1958 | 2 arq | - | 2022-10-27
+candidatos-1960 | Candidatos - 1960 | 2 arq | - | 2022-10-27
+candidatos-1962 | Candidatos - 1962 | 2 arq | - | 2022-10-27
+candidatos-1965 | Candidatos - 1965 | 2 arq | - | 2022-10-27
+candidatos-1966 | Candidatos - 1966 | 2 arq | - | 2022-10-27
+candidatos-1970 | Candidatos - 1970 | 2 arq | - | 2022-10-27
+candidatos-1974 | Candidatos - 1974 | 2 arq | - | 2022-10-27
+candidatos-1978 | Candidatos - 1978 | 2 arq | - | 2022-10-27
+candidatos-1982 | Candidatos - 1982 | 2 arq | - | 2022-10-27
+candidatos-1986 | Candidatos - 1986 | 2 arq | - | 2022-10-27
+candidatos-1989 | Candidatos - 1989 | 1 arq | - | 2022-10-27
+candidatos-1990 | Candidatos - 1990 | 2 arq | - | 2022-10-27
+candidatos-1994 | Candidatos - 1994 | 3 arq | - | 2026-04-06
+candidatos-1996 | Candidatos - 1996 | 3 arq | - | 2026-04-06
+candidatos-1998 | Candidatos - 1998 | 3 arq | - | 2023-01-24
+candidatos-2000 | Candidatos - 2000 | 3 arq | - | 2022-10-27
+candidatos-2002 | Candidatos - 2002 | 3 arq | - | 2022-10-27
+candidatos-2004 | Candidatos - 2004 | 29 arq | - | 2023-08-21
+candidatos-2006 | Candidatos - 2006 | 32 arq | - | 2023-08-21
+candidatos-2008 | Candidatos - 2008 | 30 arq | - | 2023-08-21
+candidatos-2010 | Candidatos - 2010 | 60 arq | - | 2023-08-21
+candidatos-2012 | Candidatos - 2012 | 81 arq | - | 2025-06-18
+candidatos-2014 | Candidatos - 2014 | 87 arq | - | 2023-08-22
+candidatos-2016 | Candidatos - 2016 | 83 arq | - | 2025-06-18
+candidatos-2018 | Candidatos - 2018 | 118 arq | - | 2025-12-09
+candidatos-2020-subtemas | Candidatos - 2020 | 85 arq | - | 2025-06-18
+candidatos-2022 | Candidatos - 2022 | 144 arq | - | 2024-08-14
+candidatos-2024 | Candidatos - 2024 | 60 arq | - | 2025-06-17
+candidatos-2026 | Candidatos - 2026 | 92 arq | - | 2026-09-16
+codigos-oficiais-de-uf-e-municipios-segundo-o-tse-e-o-ibge | Códigos oficiais de UF e municípios segundo o TSE e o IBGE | 1 arq | - | 2025-06-24
+comparecimento-e-abstencao-2012 | Comparecimento e Abstenção - 2012 | 2 arq | - | 2026-06-11
+comparecimento-e-abstencao-2014 | Comparecimento e Abstenção - 2014 | 3 arq | - | 2026-06-11
+comparecimento-e-abstencao-2016 | Comparecimento e Abstenção - 2016 | 3 arq | - | 2022-10-25
+comparecimento-e-abstencao-2018 | Comparecimento e Abstenção - 2018 | 3 arq | - | 2022-10-25
+comparecimento-e-abstencao-2020 | Comparecimento e Abstenção - 2020 | 3 arq | - | 2022-10-25
+comparecimento-e-abstencao-2022 | Comparecimento e Abstenção - 2022 | 3 arq | - | 2022-10-25
+comparecimento-e-abstencao-2024 | Comparecimento e Abstenção - 2024 | 3 arq | - | 2024-10-18
+correspondencia-entre-numero-interno-e-modelo-da-urna-1 | Correspondência entre número interno e modelo da urna | 1 arq | - | 2025-06-04
+dadosabertos-tse-jus-br-dataset-prestacao-de-contas-eleitorais-2022 | Prestação de Contas Eleitorais - 2022 | 6 arq | - | 2026-08-21
+delegados-partidarios | Partidos | 3 arq | - | 2023-03-09
+denuncias-eleitorais | Denúncias Eleitorais - 2026 | 1 arq | 2026-2026 | 2026-08-19
+denuncias-eleitorais-2014 | Denúncias Eleitorais - 2014 | 1 arq | 2014-2014 | 2026-08-19
+denuncias-eleitorais-2016 | Denúncias Eleitorais - 2016 | 1 arq | 2016-2016 | 2026-08-19
+denuncias-eleitorais-2018 | Denúncias Eleitorais - 2018 | 1 arq | 2018-2018 | 2026-08-19
+denuncias-eleitorais-2020 | Denúncias Eleitorais - 2020 | 1 arq | 2020-2020 | 2026-08-19
+denuncias-eleitorais-2022 | Denúncias Eleitorais - 2022 | 1 arq | 2022-2022 | 2026-08-19
+denuncias-eleitorais-2024 | Denúncias Eleitorais - 2024 | 1 arq | 2024-2024 | 2026-08-19
+eleitorado-1994 | Eleitorado - 1994 | 1 arq | 1994-1994 | 2022-10-25
+eleitorado-1996 | Eleitorado - 1996 | 1 arq | 1996-1996 | 2022-10-25
+eleitorado-1998 | Eleitorado - 1998 | 1 arq | 1998-1998 | 2022-10-25
+eleitorado-2000 | Eleitorado - 2000 | 1 arq | 2000-2000 | 2022-10-25
+eleitorado-2002 | Eleitorado - 2002 | 1 arq | 2002-2002 | 2022-10-25
+eleitorado-2004 | Eleitorado - 2004 | 1 arq | 2004-2004 | 2022-10-25
+eleitorado-2006 | Eleitorado - 2006 | 1 arq | 2006-2006 | 2022-10-25
+eleitorado-2008 | Eleitorado - 2008 | 28 arq | 2008-2008 | 2022-10-25
+eleitorado-2010 | Eleitorado - 2010 | 29 arq | 2010-2010 | 2022-10-25
+eleitorado-2012 | Eleitorado - 2012 | 29 arq | 2012-2012 | 2022-10-25
+eleitorado-2014 | Eleitorado - 2014 | 31 arq | 2014-2014 | 2022-10-25
+eleitorado-2016 | Eleitorado - 2016 | 29 arq | 2016-2016 | 2022-10-25
+eleitorado-2018 | Eleitorado - 2018 | 33 arq | 2018-2018 | 2023-05-17
+eleitorado-2020 | Eleitorado - 2020 | 31 arq | 2020-2020 | 2024-09-10
+eleitorado-2022 | Eleitorado - 2022 | 34 arq | 2022-2022 | 2024-07-18
+eleitorado-2024 | Eleitorado - 2024 | 31 arq | 2024-2024 | 2026-01-20
+eleitorado-2026 | Eleitorado - 2026 | 33 arq | 2026-2026 | 2026-09-11
+eleitorado-atual | Eleitorado Atual | 30 arq | - | 2022-10-25
+frequencia-de-atualizacao-dos-arquivos | Frequência de atualização dos arquivos | 1 arq | - | 2025-06-10
+mesarias-mesarios-e-funcoes-especiais-2026 | Mesárias, mesários e funções especiais - 2026 | 2 arq | - | 2026-08-17
+mesarios-2016 | Mesárias, mesários e funções especiais - 2016 | 2 arq | - | 2025-04-16
+mesarios-2022 | Mesárias, mesários e funções especiais - 2022 | 2 arq | - | 2025-04-16
+mesarios-2024 | Mesárias, mesários e funções especiais - 2024 | 2 arq | - | 2025-04-16
+mesarios1-2018 | Mesárias, mesários e funções especiais - 2018 | 2 arq | - | 2025-04-16
+mesarios1-2020 | Mesárias, mesários e funções especiais - 2020 | 2 arq | - | 2025-04-16
+pesquisas-eleitorais-2012 | Pesquisas Eleitorais - 2012 | 5 arq | - | 2023-03-03
+pesquisas-eleitorais-2014 | Pesquisas Eleitorais - 2014 | 5 arq | - | 2023-03-03
+pesquisas-eleitorais-2016 | Pesquisas Eleitorais - 2016 | 6 arq | - | 2023-03-03
+pesquisas-eleitorais-2018 | Pesquisas Eleitorais - 2018 | 6 arq | - | 2023-03-03
+pesquisas-eleitorais-2020 | Pesquisas Eleitorais - 2020 | 6 arq | - | 2023-03-03
+pesquisas-eleitorais-2022 | Pesquisas Eleitorais - 2022 | 6 arq | - | 2026-05-09
+pesquisas-eleitorais-2024 | Pesquisas Eleitorais - 2024 | 6 arq | - | 2024-01-25
+pesquisas-eleitorais-2026 | Pesquisas Eleitorais - 2026 | 6 arq | - | 2026-02-10
+prestacao-de-contas-eleitorais-2002 | Prestação de Contas Eleitorais - 2002 | 1 arq | - | 2022-10-25
+prestacao-de-contas-eleitorais-2004 | Prestação de Contas Eleitorais - 2004 | 1 arq | - | 2022-10-25
+prestacao-de-contas-eleitorais-2006 | Prestação de Contas Eleitorais - 2006 | 1 arq | - | 2022-10-25
+prestacao-de-contas-eleitorais-2008 | Prestação de Contas Eleitorais - 2008 | 1 arq | - | 2022-10-25
+prestacao-de-contas-eleitorais-2010 | Prestação de Contas Eleitorais - 2010 | 1 arq | - | 2022-10-25
+prestacao-de-contas-eleitorais-2012 | Prestação de Contas Eleitorais - 2012 | 4 arq | - | 2022-10-25
+prestacao-de-contas-eleitorais-2014 | Prestação de Contas Eleitorais - 2014 | 8 arq | 2015-2015 | 2022-12-01
+prestacao-de-contas-eleitorais-2016 | Prestação de Contas Eleitorais - 2016 | 34 arq | - | 2023-10-25
+prestacao-de-contas-eleitorais-2018 | Prestação de Contas Eleitorais - 2018 | 5 arq | - | 2022-12-01
+prestacao-de-contas-eleitorais-2020 | Prestação de Contas Eleitorais - 2020 | 6 arq | - | 2026-08-21
+prestacao-de-contas-eleitorais-2024 | Prestação de Contas Eleitorais - 2024 | 6 arq | - | 2026-08-21
+prestacao-de-contas-eleitorais-2026 | Prestação de Contas Eleitorais - 2026 | 7 arq | - | 2026-09-22
+prestacao-de-contas-partidarias-2014 | Prestação de Contas Partidárias - 2014 | 1 arq | - | 2022-10-27
+prestacao-de-contas-partidarias-2015 | Prestação de Contas Partidárias - 2015 | 1 arq | - | 2022-10-27
+prestacao-de-contas-partidarias-2016 | Prestação de Contas Partidárias - 2016 | 1 arq | - | 2022-10-27
+prestacao-de-contas-partidarias-2017 | Prestação de Contas Partidárias - 2017 | 3 arq | - | 2023-05-31
+prestacao-de-contas-partidarias-2018 | Prestação de Contas Partidárias - 2018 | 3 arq | - | 2023-05-31
+prestacao-de-contas-partidarias-2019 | Prestação de Contas Partidárias - 2019 | 3 arq | - | 2023-05-31
+prestacao-de-contas-partidarias-2020 | Prestação de Contas Partidárias - 2020 | 3 arq | - | 2024-12-16
+prestacao-de-contas-partidarias-2021 | Prestação de Contas Partidárias - 2021 | 3 arq | - | 2023-05-29
+prestacao-de-contas-partidarias-2022 | Prestação de Contas Partidárias - 2022 | 3 arq | - | 2024-12-16
+prestacao-de-contas-partidarias-2023 | Prestação de Contas Partidárias - 2023 | 3 arq | - | 2023-05-29
+prestacao-de-contas-partidarias-2024 | Prestação de Contas Partidárias - 2024 | 3 arq | - | 2025-06-27
+prestacao-de-contas-partidarias-2025 | Prestação de Contas Partidárias - 2025 | 3 arq | - | 2026-01-09
+prestacao-de-contas-partidarias-2026 | Prestação de Contas Partidárias - 2026 | 2 arq | - | 2026-07-10
+processo-eleitoral | Processual - 2018 | 5 arq | - | 2026-09-08
+processual-2020 | Processual - 2020 | 5 arq | - | 2026-09-08
+processual-2022 | Processual - 2022 | 5 arq | - | 2026-09-08
+processual-2024 | Processual - 2024 | 5 arq | - | 2026-09-08
+processual-2026 | Processual - 2026 | 5 arq | - | 2026-09-08
+rae-requerimento-de-alistamento-eleitoral | RAE - Requerimento de alistamento eleitoral | 18 arq | 2009-2026 | 2026-03-12
+resultados-1933 | Resultados - 1933 | 3 arq | - | 2022-10-25
+resultados-1934 | Resultados - 1934 | 3 arq | - | 2022-10-25
+resultados-1945 | Resultados - 1945 | 3 arq | - | 2022-10-25
+resultados-1947 | Resultados - 1947 | 3 arq | - | 2022-10-25
+resultados-1950 | Resultados - 1950 | 3 arq | - | 2022-10-25
+resultados-1954 | Resultados - 1954 | 3 arq | - | 2022-10-25
+resultados-1955 | Resultados - 1955 | 3 arq | - | 2022-10-25
+resultados-1958 | Resultados - 1958 | 3 arq | - | 2022-10-25
+resultados-1960 | Resultados - 1960 | 3 arq | - | 2022-10-25
+resultados-1962 | Resultados - 1962 | 3 arq | - | 2022-10-25
+resultados-1965 | Resultados - 1965 | 3 arq | - | 2022-10-25
+resultados-1966 | Resultados - 1966 | 3 arq | - | 2022-10-25
+resultados-1970 | Resultados - 1970 | 3 arq | - | 2022-10-25
+resultados-1974 | Resultados - 1974 | 3 arq | - | 2022-10-25
+resultados-1978 | Resultados - 1978 | 3 arq | - | 2022-10-25
+resultados-1982 | Resultados - 1982 | 3 arq | - | 2022-10-25
+resultados-1986 | Resultados - 1986 | 3 arq | - | 2022-10-25
+resultados-1989 | Resultados - 1989 | 2 arq | - | 2022-10-25
+resultados-1990 | Resultados - 1990 | 3 arq | - | 2022-10-25
+resultados-1994 | Resultados - 1994 | 3 arq | - | 2026-04-22
+resultados-1996 | Resultados - 1996 | 3 arq | - | 2026-04-22
+resultados-1998 | Resultados - 1998 | 32 arq | 1998-1998 | 2023-03-03
+resultados-2000 | Resultados - 2000 | 30 arq | 2000-2000 | 2023-03-03
+resultados-2002 | Resultados - 2002 | 32 arq | 2002-2002 | 2023-03-03
+resultados-2004 | Resultados - 2004 | 30 arq | 2004-2004 | 2023-03-03
+resultados-2006 | Resultados - 2006 | 32 arq | 2006-2006 | 2023-03-03
+resultados-2008 | Resultados - 2008 | 30 arq | 2008-2008 | 2023-03-03
+resultados-2010 | Resultados - 2010 | 34 arq | 2010-2010 | 2022-10-25
+resultados-2012 | Resultados - 2012 | 31 arq | 2012-2012 | 2024-07-05
+resultados-2012-boletim-de-urna-1-turno | Resultados - 2012 - Boletim de Urna | 92 arq | - | 2022-10-25
+resultados-2012-correspondencias-esperadas-e-efetivadas-2-turno | Resultados - 2012 - Correspondências esperadas e efetivadas - 2º turno | 104 arq | - | 2022-10-25
+resultados-2012-correspondencias-esperadas-efetivadas-1-turno | Resultados - 2012 - Correspondências esperadas e efetivadas - 1º turno | 104 arq | - | 2022-10-25
+resultados-2014 | Resultados - 2014 | 32 arq | 2014-2014 | 2022-10-25
+resultados-2014-boletim-de-urna | Resultados - 2014 - Boletim de Urna | 112 arq | 2014-2014 | 2022-10-25
+resultados-2014-correspondencias-esperadas-e-efetivadas-1-turno | Resultados - 2014 - Correspondências esperadas e efetivadas - 1º turno | 168 arq | 2014-2014 | 2022-10-25
+resultados-2014-correspondencias-esperadas-e-efetivadas-2-turno | Resultados - 2014 - Correspondências esperadas e efetivadas - 2º turno | 168 arq | 2014-2014 | 2022-10-25
+resultados-2016 | Resultados - 2016 | 30 arq | 2016-2016 | 2022-10-25
+resultados-2016-boletim-de-urna | Resultados - 2016 - Boletim de Urna | 92 arq | 2016-2016 | 2022-10-25
+resultados-2016-correspondencias-esperadas-e-efetivadas-1-turno | Resultados - 2016 - Correspondências esperadas e efetivadas - 1º turno | 160 arq | 2016-2016 | 2022-10-25
+resultados-2016-correspondencias-esperadas-e-efetivadas-2-turno | Resultados - 2016 - Correspondências esperadas e efetivadas - 2º turno | 148 arq | 2016-2016 | 2022-10-25
+resultados-2018 | Resultados - 2018 | 32 arq | 2018-2018 | 2022-11-04
+resultados-2018-boletim-de-urna | Resultados - 2018 - Boletim de Urna | 112 arq | 2018-2018 | 2022-10-25
+resultados-2018-correspondencias-esperadas-e-efetivadas-1-turno | Resultados - 2018 - Correspondências esperadas e efetivadas - 1º turno | 168 arq | 2018-2018 | 2022-10-26
+resultados-2018-correspondencias-esperadas-e-efetivadas-2-turno | Resultados - 2018 - Correspondências esperadas e efetivadas - 2º turno | 168 arq | 2018-2018 | 2022-10-25
+resultados-2020 | Resultados - 2020 | 30 arq | 2020-2020 | 2022-10-25
+resultados-2020-boletim-de-urna | Resultados - 2020 - Boletim de Urna | 108 arq | 2020-2020 | 2022-10-25
+resultados-2020-correspondencias-esperadas-e-efetivadas-1-turno | Resultados - 2020 - Correspondências esperadas e efetivadas - 1º turno | 162 arq | 2020-2020 | 2022-10-25
+resultados-2020-correspondencias-esperadas-e-efetivadas-2-turno | Resultados - 2020 - Correspondências esperadas e efetivadas - 2º turno | 162 arq | 2020-2020 | 2022-10-25
+resultados-2020-suplementares | Resultados - Eleições suplementares 2020 | 5 arq | - | 2023-10-04
+resultados-2022 | Resultados - 2022 | 34 arq | 2022-2022 | 2022-11-05
+resultados-2022-arquivos-transmitidos-para-totalizacao | Resultados 2022 - Arquivos transmitidos para totalização | 56 arq | 2022-2022 | 2024-10-15
+resultados-2022-boletim-de-urna | Resultados - 2022 - Boletim de Urna | 112 arq | 2022-2022 | 2022-11-05
+resultados-2022-correspondencias-esperadas-e-efetivadas-1-turno | Resultados - 2022 - Correspondências esperadas e efetivadas - 1º turno | 168 arq | 2022-2022 | 2022-11-05
+resultados-2022-correspondencias-esperadas-e-efetivadas-2-turno | Resultados - 2022 - Correspondências esperadas e efetivadas - 2º turno | 168 arq | 2022-2022 | 2023-03-07
+resultados-2024 | Resultados - 2024 | 56 arq | 2024-2024 | 2024-10-10
+resultados-2024-arquivos-transmitidos-para-totalizacao | Resultados 2024 - Arquivos transmitidos para totalização | 52 arq | - | 2024-10-29
+resultados-2024-boletim-de-urna | Resultados - 2024 - Boletim de Urna | 104 arq | 2024-2024 | 2024-10-30
+resultados-2024-correspondencias-esperadas-e-efetivadas-1-turno | Resultados - 2024 - Correspondências esperadas e efetivadas - 1º turno | 156 arq | 2024-2024 | 2024-10-10
+resultados-2024-correspondencias-esperadas-e-efetivadas-2-turno | Resultados - 2024 - Correspondências esperadas e efetivadas - 2º turno | 156 arq | 2024-2024 | 2024-10-28
+resultados-2024-logs-do-sistema-de-preparacao-das-urnas-eletronicas-gedai-1-turno | Resultados - 2024 - Logs do sistema de preparação das urnas eletrônicas (Gedai) - 1º turno | 104 arq | 2024-2024 | 2026-06-18
+resultados-2024-logs-do-sistema-de-preparacao-das-urnas-eletronicas-gedai-2-turno | Resultados - 2024 - Logs do sistema de preparação das urnas eletrônicas (Gedai) - 2º turno | 104 arq | 2024-2024 | 2024-10-30
+resultados-2026 | Resultados - 2026 | 28 arq | 2026-2026 | 2026-10-06
+resultados-2026-boletim-de-urna | Resultados - 2026 - Boletim de Urna | 56 arq | 2026-2026 | 2026-10-06
+resultados-2026-correspondencias-esperadas-e-efetivadas-1-turno | Resultados - 2026 - Correspondências esperadas e efetivadas - 1º turno | 168 arq | 2026-2026 | 2026-10-06
+resultados-2026-logs-do-sistema-de-preparacao-das-urnas-eletronicas-gedai-1-turno | Resultados - 2026 - Logs do sistema de preparação das urnas eletrônicas (Gedai) - 1º turno | 112 arq | 2026-2026 | 2026-10-04
+resultados-eleicoes-suplementares-2022 | Resultados - Eleições suplementares 2022 | 6 arq | - | 2026-06-22
+resultados-eleicoes-suplementares-2024 | Resultados - Eleições suplementares 2024 | 5 arq | - | 2026-06-20
+transferencia-do-eleitorado | Transferência do eleitorado | 18 arq | 2009-2026 | 2026-03-18

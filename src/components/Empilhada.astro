@@ -1,0 +1,11 @@
+---
+import { dec } from '../lib/fmt';
+interface Seg { rotulo: string; valor: number; cor: string }
+interface Props { segmentos: Seg[]; descricao: string }
+const { segmentos, descricao } = Astro.props;
+---
+<div class="empilhada" role="img" aria-label={descricao}>
+  {segmentos.filter((s) => s.valor > 0).map((s) => (
+    <span style={`flex:${s.valor} 1 0;background:${s.cor}`} title={`${s.rotulo}: ${dec(s.valor)}%`}></span>
+  ))}
+</div>

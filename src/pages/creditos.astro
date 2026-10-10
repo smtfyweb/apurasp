@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro';
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
+const raiz = process.cwd();
+const ler = async (p: string) => { try { return JSON.parse(await readFile(path.join(raiz, ...p.split('/')), 'utf-8')); } catch { return null; } };
+const simb = (await ler('public/data/simbolos.json')) ?? {};
+const lista = (await ler('public/data/municipios.json')) ?? [];
+const nomes = Object.fromEntries(lista.map((m) => [m.ibge, m.nome]));
+const linhas = Object.entries(simb)
+  .flatMap(([ibge, s]) => ['bandeira', 'brasao'].filter((t) => s[t]).map((t) => ({ nome: nomes[ibge] ?? ibge, tipo: t === 'bandeira' ? 'Bandeira' : 'Brasão', ...s[t] })))
+  .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR') || a.tipo.localeCompare(b.tipo));
+---
+<Base titulo="Créditos das imagens | ApuraSP" descricao="Autor e licença de cada bandeira e brasão exibido no ApuraSP.">
+  <main style="max-width: 980px">
+    <h1>Créditos das imagens</h1>
+    <p class="leitura" style="margin-top:.6rem">As bandeiras e os brasões vêm do Wikimedia Commons. Só aparecem imagens com licença livre ou em domínio público, e cada uma tem o autor e a licença indicados abaixo, com link para o arquivo original. Os arquivos foram apenas reduzidos de tamanho.</p>
+    <div class="aviso"><p>Bandeira e brasão são símbolos oficiais dos municípios. Aqui servem só para identificar a cidade e não indicam apoio nem vínculo da prefeitura. Antes de usar essas imagens em outros materiais, confira a lei do município sobre o uso de símbolos oficiais.</p></div>
+    <div class="rolagem">
+      <table class="tabela">
+        <thead><tr><th>Município</th><th>Imagem</th><th>Autor</th><th>Licença</th><th>Origem</th></tr></thead>
+        <tbody>
+          {linhas.map((l) => (
+            <tr><td>{l.nome}</td><td>{l.tipo}</td><td>{l.autor || 'Autor não informado'}</td><td>{l.licenca}</td><td><a href={l.pagina} rel="noopener">Arquivo no Commons</a></td></tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </main>
+</Base>

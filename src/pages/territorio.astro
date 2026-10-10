@@ -1,0 +1,301 @@
+---
+import Base from '../layouts/Base.astro';
+import { BASE } from '../lib/url';
+---
+<Base titulo="Território: escolas, bairros e votos | ApuraSP" atual="territorio" descricao="Onde cada candidato foi forte e quem vota em cada região: votos e perfil dos eleitores por local de votação e por bairro.">
+  <main id="app-terr" data-base={BASE}>
+    <h1>Território: escolas, bairros e votos</h1>
+    <p class="leitura" style="margin-top:.6rem">Onde cada candidato foi forte e quem vota em cada região da cidade. Os números são por <b>local de votação</b>, a escola ou o prédio onde as urnas ficam, e podem ser reunidos por bairro.</p>
+    <div class="aviso"><p>Para proteger o sigilo do voto, o site não mostra seção por seção. Locais com menos de 100 votos válidos têm os números ocultos e entram só nos totais por bairro.</p></div>
+
+    <div class="linha-controles">
+      <div><label for="tr-mun">Município</label><input id="tr-mun" type="text" list="tr-lista" autocomplete="off" placeholder="Digite o nome" /><datalist id="tr-lista"></datalist></div>
+      <div>
+        <label for="tr-ano">Eleição</label>
+        <select id="tr-ano"><option value="2024" selected>2024</option><option value="2022">2022</option><option value="2026">2026</option></select>
+      </div>
+      <div><label for="tr-cargo">Cargo</label><select id="tr-cargo"></select></div>
+      <div><label for="tr-cand">Candidato</label><input id="tr-cand" type="text" list="tr-cands" autocomplete="off" placeholder="Digite o nome" /><datalist id="tr-cands"></datalist></div>
+      <div><label for="tr-agr">Reunir por</label>
+        <select id="tr-agr"><option value="local">Local de votação</option><option value="bairro">Bairro</option></select></div>
+      <div><label for="tr-cor">Pintar o mapa por</label>
+        <select id="tr-cor">
+          <option value="cand">Votação do candidato</option>
+          <option value="f">Mulheres</option>
+          <option value="j">16 a 24 anos</option>
+          <option value="i">60 anos ou mais</option>
+          <option value="u">Ensino superior completo</option>
+        </select></div>
+    </div>
+    <p id="tr-aviso" class="fonte" role="status"></p>
+    <dl id="tr-kpi" class="grade"></dl>
+
+    <section class="pn-painel" aria-labelledby="h-trm" style="margin-top:1.2rem">
+      <header class="pn-barra"><h2 id="h-trm">Mapa de pontos</h2></header>
+      <div class="pn-corpo"><div id="tr-mapa" class="tr-mapa"></div><div id="tr-leg" class="tr-leg"></div></div>
+    </section>
+
+    <section class="pn-painel" aria-labelledby="h-trt" style="margin-top:1.2rem">
+      <header class="pn-barra">
+        <h2 id="h-trt">Tabela</h2>
+        <div class="pn-acoes"><button type="button" id="tr-csv"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></svg> Baixar CSV</button></div>
+      </header>
+      <div class="pn-corpo">
+        <div class="rolagem"><table id="tr-tab" class="tabela pn-tab tr-tab"></table></div>
+        <p class="fonte" id="tr-nota"></p>
+        <p class="fonte"><b>Força</b> é o percentual do candidato no local dividido pelo percentual dele no município inteiro: 1,0 é a média e 2,0 é o dobro. O perfil (mulheres, idade, escolaridade) é de todos os eleitores do local, não só dos que votaram nele.</p>
+      </div>
+    </section>
+    <p class="fonte">Fonte: TSE (locais de votação, perfil do eleitorado e votação por seção). Os números por bairro dependem do bairro informado no cadastro dos locais.</p>
+  </main>
+</Base>
+
+<script>
+  import { titulo } from '../lib/fmt';
+import { melhorarCaixas } from '../lib/combobox';
+import { melhorarSeletores } from '../lib/seletor';
+melhorarCaixas();
+melhorarSeletores();
+
+  type Loc = { id: string; n: string; e: string | null; b: string | null; c: string | null; la: number | null; lo: number | null; s: number; el: number | null; pt?: number; f?: number; j?: number; i?: number; u?: number; d?: number };
+  type Bloco = { t: string; val: number[]; br: number[]; nu: number[]; c: [number, string, string | null, number][]; v: number[][] };
+  type Dados = { ibge: string; nome: string; locais: Record<string, Loc[]>; votos: Record<string, Record<string, Bloco>> };
+  type Linha = { nome: string; bairro: string; el: number; s: number; v: number | null; val: number | null; oculto: boolean; pct: number | null; forca: number | null; f: number | null; j: number | null; i: number | null; u: number | null; la: number | null; lo: number | null };
+
+  const ROT_CARGO: Record<string, string> = { vereador: 'Vereador', prefeito: 'Prefeito', presidente: 'Presidente', governador: 'Governador', senador: 'Senador', federal: 'Deputado federal', estadual: 'Deputado estadual' };
+  const METRICAS: Record<string, string> = { cand: '% do candidato nos votos válidos', f: 'Mulheres, % dos eleitores', j: '16 a 24 anos, % dos eleitores', i: '60 anos ou mais, % dos eleitores', u: 'Superior completo, % dos eleitores' };
+  const MIN_VALIDOS = 100, MAX_LINHAS = 300, K = Math.cos((22.5 * Math.PI) / 180);
+
+  const app = document.getElementById('app-terr') as HTMLElement;
+  const base = app.dataset.base ?? '/';
+  const $ = (id: string) => document.getElementById(id) as HTMLElement;
+  const n0 = (x: number) => Math.round(x).toLocaleString('pt-BR');
+  const d1 = (x: number) => x.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  const sem = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('pt-BR').trim();
+  const esc = (s: unknown) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } as Record<string, string>)[c]);
+
+  let lista: { ibge: string; nome: string }[] = [];
+  let dados: Dados | null = null;
+  let geo: any = null;
+  let linhasAtuais: Linha[] = [];
+  const st = { ibge: '3505708', ano: '2024', chave: '', cand: null as number | null, agr: 'local', cor: 'cand', ordem: { k: '', dir: -1 } };
+  let csvTexto = '', csvNome = 'territorio.csv';
+
+  const bloco = (): Bloco | undefined => dados?.votos?.[st.ano]?.[st.chave];
+  const rotCand = (c: Bloco['c'][number]) => `${titulo(c[1])}${c[2] ? ', ' + c[2] : ''} (${n0(c[3])} votos)`;
+  const metricaAtiva = () => (st.cor === 'cand' && st.cand == null ? 'f' : st.cor);
+
+  function rotuloChave(k: string, todas: string[]): string {
+    const m = k.match(/^(\D+)(\d)$/); if (!m) return k;
+    const cargo = ROT_CARGO[m[1]] ?? m[1];
+    if (m[2] === '2') return `${cargo}, 2º turno`;
+    return todas.includes(`${m[1]}2`) ? `${cargo}, 1º turno` : cargo;
+  }
+
+  function anosDisponiveis() {
+    const anos = Object.keys(dados?.locais ?? {});
+    const selA = $('tr-ano') as HTMLSelectElement;
+    Array.from(selA.options).forEach((o) => { o.disabled = !anos.includes(o.value); if (o.disabled) o.dataset.nota = 'sem dados'; else delete o.dataset.nota; });
+    if (!anos.includes(st.ano)) st.ano = ['2024', '2022', '2026'].find((a) => anos.includes(a)) ?? st.ano;
+    selA.value = st.ano;
+  }
+
+  function preencherCargos() {
+    const ch = Object.keys(dados?.votos?.[st.ano] ?? {});
+    const sel = $('tr-cargo') as HTMLSelectElement;
+    sel.innerHTML = ch.length ? ch.map((k) => `<option value="${k}">${esc(rotuloChave(k, ch))}</option>`).join('') : '<option value="">Sem votos por seção publicados</option>';
+    sel.disabled = !ch.length;
+    if (!ch.includes(st.chave)) st.chave = ch[0] ?? '';
+    sel.value = st.chave;
+  }
+
+  function preencherCandidatos() {
+    const b = bloco(), inp = $('tr-cand') as HTMLInputElement;
+    $('tr-cands').innerHTML = b ? b.c.map((c) => `<option value="${esc(rotCand(c))}"></option>`).join('') : '';
+    inp.disabled = !b;
+    if (!b) { st.cand = null; inp.value = ''; return; }
+    if (st.cand == null || !b.c.some((c) => c[0] === st.cand)) st.cand = b.c[0]?.[0] ?? null;
+    const atual = b.c.find((c) => c[0] === st.cand);
+    inp.value = atual ? rotCand(atual) : '';
+  }
+
+  function montar() {
+    const locs = dados?.locais?.[st.ano] ?? [], b = bloco();
+    const ci = b && st.cand != null ? b.c.findIndex((c) => c[0] === st.cand) : -1;
+    const itens = locs.map((l, j) => ({ l, v: ci >= 0 ? b!.v[ci]?.[j] ?? 0 : null, val: b ? b.val[j] ?? 0 : null }));
+    const totV = ci >= 0 ? itens.reduce((s, x) => s + (x.v ?? 0), 0) : null;
+    const totVal = b ? itens.reduce((s, x) => s + (x.val ?? 0), 0) : null;
+    const pctMun = totV != null && totVal ? (100 * totV) / totVal : null;
+    const grupos = new Map<string, typeof itens>();
+    for (const x of itens) {
+      const k = st.agr === 'bairro' ? x.l.b ?? 'Sem bairro informado' : x.l.id;
+      if (!grupos.has(k)) grupos.set(k, []);
+      grupos.get(k)!.push(x);
+    }
+    const rows: Linha[] = [...grupos.entries()].map(([k, xs]) => {
+      const w = (key: 'f' | 'j' | 'i' | 'u') => {
+        let s = 0, t = 0;
+        for (const x of xs) { const p = x.l.pt, v = x.l[key]; if (p && v != null) { s += v * p; t += p; } }
+        return t ? s / t : null;
+      };
+      const val = b ? xs.reduce((s, x) => s + (x.val ?? 0), 0) : null;
+      const vv = ci >= 0 ? xs.reduce((s, x) => s + (x.v ?? 0), 0) : null;
+      const oculto = val != null && val < MIN_VALIDOS;
+      const pct = !oculto && vv != null && val ? (100 * vv) / val : null;
+      const comCoord = xs.filter((x) => x.l.la != null && x.l.lo != null);
+      const pe = comCoord.reduce((s, x) => s + (x.l.el ?? 1), 0);
+      return {
+        nome: st.agr === 'bairro' ? k : xs[0].l.n, bairro: st.agr === 'bairro' ? `${xs.length} locais` : xs[0].l.b ?? '—',
+        el: xs.reduce((s, x) => s + (x.l.el ?? 0), 0), s: xs.reduce((s, x) => s + x.l.s, 0),
+        v: oculto ? null : vv, val, oculto, pct, forca: pct != null && pctMun ? pct / pctMun : null,
+        f: w('f'), j: w('j'), i: w('i'), u: w('u'),
+        la: pe ? comCoord.reduce((s, x) => s + (x.l.la as number) * (x.l.el ?? 1), 0) / pe : null,
+        lo: pe ? comCoord.reduce((s, x) => s + (x.l.lo as number) * (x.l.el ?? 1), 0) / pe : null,
+      };
+    });
+    return { rows, totV, pctMun, locs };
+  }
+
+  function colunas(local: boolean, comCand: boolean): [string, string, string][] {
+    const c: [string, string, string][] = [['nome', local ? 'Local de votação' : 'Bairro', 't'], ['bairro', local ? 'Bairro' : 'Locais', 't'], ['el', 'Eleitores', 'n']];
+    if (comCand) c.push(['v', 'Votos', 'n'], ['pct', '% dos válidos', 'p'], ['forca', 'Força', 'x']);
+    c.push(['f', 'Mulheres', 'p'], ['j', '16 a 24 anos', 'p'], ['i', '60 anos ou mais', 'p'], ['u', 'Superior completo', 'p']);
+    return c;
+  }
+  const celula = (r: Linha, k: string, tipo: string) => {
+    const v = (r as any)[k];
+    if (tipo === 't') return esc(v);
+    if (v == null) return r.oculto && ['v', 'pct', 'forca'].includes(k) ? 'oculto' : '—';
+    return tipo === 'n' ? n0(v) : tipo === 'p' ? `${d1(v)}%` : `×${d1(v)}`;
+  };
+
+  function tabela(rows: Linha[]) {
+    const comCand = st.cand != null && !!bloco();
+    const cols = colunas(st.agr === 'local', comCand);
+    if (!st.ordem.k || !cols.some((c) => c[0] === st.ordem.k)) st.ordem = { k: comCand ? 'v' : 'el', dir: -1 };
+    const k = st.ordem.k, dir = st.ordem.dir;
+    const ord = [...rows].sort((a, b) => {
+      const x = (a as any)[k], y = (b as any)[k];
+      if (x == null && y == null) return 0; if (x == null) return 1; if (y == null) return -1;
+      return (typeof x === 'string' ? x.localeCompare(y, 'pt-BR') : x - y) * dir;
+    });
+    linhasAtuais = ord;
+    const cab = cols.map(([kk, r]) => `<th scope="col" aria-sort="${kk === k ? (dir < 0 ? 'descending' : 'ascending') : 'none'}"><button type="button" data-k="${kk}">${r}${kk === k ? (dir < 0 ? ' ↓' : ' ↑') : ''}</button></th>`).join('');
+    const corpo = ord.slice(0, MAX_LINHAS).map((r) => `<tr>${cols.map(([kk, , t], i) => i === 0 ? `<th scope="row">${esc(r.nome)}</th>` : `<td${t === 't' ? ' class="t"' : ''}>${celula(r, kk, t)}</td>`).join('')}</tr>`).join('');
+    $('tr-tab').innerHTML = `<caption class="fonte" style="text-align:left;caption-side:top">${esc(dados?.nome ?? '')}, ${st.ano}</caption><thead><tr>${cab}</tr></thead><tbody>${corpo}</tbody>`;
+    $('tr-nota').textContent = ord.length > MAX_LINHAS ? `Mostrando ${MAX_LINHAS} de ${n0(ord.length)} linhas. Baixe o CSV para ver todas.` : `${n0(ord.length)} linhas.`;
+    const q = (s: string) => (/[;"\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s);
+    const cv = (r: Linha, kk: string, t: string) => { const v = (r as any)[kk]; return v == null ? '' : t === 't' ? q(String(v)) : typeof v === 'number' ? v.toFixed(t === 'n' ? 0 : 2).replace('.', ',') : String(v); };
+    csvTexto = [cols.map((c) => q(c[1])).join(';'), ...ord.map((r) => cols.map(([kk, , t]) => cv(r, kk, t)).join(';'))].join('\n');
+    csvNome = `apurasp_territorio_${sem(dados?.nome ?? 'municipio').replace(/\s+/g, '-')}_${st.ano}_${st.agr}.csv`;
+  }
+
+  const mix = (a: number[], b: number[], t: number) => `rgb(${a.map((v, i) => Math.round(v + (b[i] - v) * t)).join(',')})`;
+  const CLARO = [226, 236, 246], ESCURO = [18, 63, 122];
+  const aneis = (g: any): number[][][] => (g.type === 'Polygon' ? g.coordinates : g.coordinates.flat());
+
+  async function mapa(rows: Linha[]) {
+    const alvo = $('tr-mapa'), leg = $('tr-leg');
+    const pts = rows.filter((r) => r.la != null && r.lo != null);
+    if (!pts.length) { alvo.innerHTML = '<p class="fonte">Os locais deste município não têm coordenada no cadastro do TSE, por isso não há mapa. A tabela continua valendo.</p>'; leg.innerHTML = ''; return; }
+    if (!geo) { try { geo = await (await fetch(`${base}data/geo/sp_municipios.geojson`)).json(); } catch { geo = { features: [] }; } }
+    const feat = geo.features.find((f: any) => String(f.properties.codarea) === st.ibge);
+    const X = (lon: number) => lon * K, Y = (lat: number) => -lat;
+    const xs: number[] = [], ys: number[] = [];
+    const caminho = feat ? aneis(feat.geometry).map((ring) => ring.map((p, i) => { xs.push(X(p[0])); ys.push(Y(p[1])); return `${i ? 'L' : 'M'}${X(p[0]).toFixed(5)} ${Y(p[1]).toFixed(5)}`; }).join('') + 'Z').join('') : '';
+    pts.forEach((r) => { xs.push(X(r.lo as number)); ys.push(Y(r.la as number)); });
+    const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+    const w = Math.max(x1 - x0, 1e-4), h = Math.max(y1 - y0, 1e-4), pad = Math.max(w, h) * 0.04, sw = Math.max(w, h) / 500;
+    const k = metricaAtiva();
+    const valor = (r: Linha) => (k === 'cand' ? r.pct : (r as any)[k] as number | null);
+    const vs = pts.map(valor).filter((v): v is number => v != null);
+    const mn = vs.length ? Math.min(...vs) : 0, mx = vs.length ? Math.max(...vs) : 1;
+    const maxEl = Math.max(1, ...pts.map((r) => r.el));
+    const rmax = Math.max(w, h) / 38, rmin = Math.max(w, h) / 220;
+    const circ = pts.map((r) => {
+      const v = valor(r), t = v == null || mx === mn ? 0.5 : (v - mn) / (mx - mn);
+      const cor = v == null ? '#B8C0CC' : mix(CLARO, ESCURO, t);
+      return `<circle cx="${X(r.lo as number).toFixed(5)}" cy="${Y(r.la as number).toFixed(5)}" r="${(rmin + (rmax - rmin) * Math.sqrt(r.el / maxEl)).toFixed(5)}" fill="${cor}" stroke="#fff" stroke-width="${sw}" opacity=".92"><title>${esc(r.nome)}: ${n0(r.el)} eleitores${v != null ? `; ${METRICAS[k]}: ${d1(v)}%` : r.oculto ? '; votos ocultos (poucos votos)' : ''}</title></circle>`;
+    }).join('');
+    alvo.innerHTML = `<svg viewBox="${x0 - pad} ${y0 - pad} ${w + 2 * pad} ${h + 2 * pad}" role="img" aria-label="Mapa de pontos dos locais de votação de ${esc(dados?.nome ?? '')}">` +
+      `${caminho ? `<path d="${caminho}" fill="#EDF0F2" stroke="#9AA5B5" stroke-width="${sw * 1.5}" fill-rule="evenodd"/>` : ''}${circ}</svg>`;
+    leg.innerHTML = `<span>${METRICAS[k]}:</span><span>${vs.length ? d1(mn) + '%' : ''}</span><i class="gradiente" style="background:linear-gradient(90deg,${mix(CLARO, ESCURO, 0)},${mix(CLARO, ESCURO, 1)})"></i><span>${vs.length ? d1(mx) + '%' : ''}</span><span>Tamanho do ponto: eleitores. ${rows.length - pts.length ? `${rows.length - pts.length} sem coordenada. ` : ''}Cinza: sem dado.</span>`;
+  }
+
+  async function render() {
+    if (!dados) return;
+    const { rows, totV, pctMun, locs } = montar();
+    const item = (r: string, v: string) => `<div><dt>${r}</dt><dd>${v}</dd></div>`;
+    const comC = locs.filter((l) => l.la != null && l.lo != null).length;
+    $('tr-kpi').innerHTML = item('Locais de votação', n0(locs.length)) + item('Seções', n0(locs.reduce((s, l) => s + l.s, 0))) +
+      item('Eleitores', n0(locs.reduce((s, l) => s + (l.el ?? 0), 0))) + item('Bairros', n0(new Set(locs.map((l) => l.b).filter(Boolean)).size)) +
+      item('Com coordenada', locs.length ? `${d1((100 * comC) / locs.length)}%` : '—') +
+      (totV != null ? item('Votos do candidato', n0(totV)) + item('% dos válidos', pctMun != null ? `${d1(pctMun)}%` : '—') : '');
+    const semVotos = !bloco();
+    $('tr-aviso').textContent = !locs.length ? `Sem locais de votação cadastrados para ${st.ano}.` :
+      semVotos ? (st.ano === '2026' ? 'Os votos de 2026 por seção ainda não foram carregados para este município. Aqui aparece só o perfil dos eleitores de cada local.' : `Sem votos por seção para ${st.ano} neste município. Aqui aparece só o perfil dos eleitores de cada local.`) : '';
+    tabela(rows); await mapa(rows); sincronizarUrl();
+    document.title = `${dados.nome}: território | ApuraSP`;
+  }
+
+  function sincronizarUrl() {
+    const p = new URLSearchParams({ m: st.ibge, a: st.ano, g: st.agr, p: st.cor });
+    if (st.chave) p.set('c', st.chave);
+    if (st.cand != null) p.set('k', String(st.cand));
+    history.replaceState(null, '', `?${p.toString()}`);
+  }
+
+  async function carregar() {
+    $('tr-aviso').textContent = 'Carregando…';
+    try { dados = await (await fetch(`${base}data/territorio/${st.ibge}.json`)).json(); }
+    catch {
+      dados = null; $('tr-kpi').innerHTML = ''; $('tr-mapa').innerHTML = ''; $('tr-leg').innerHTML = ''; $('tr-tab').innerHTML = '';
+      $('tr-aviso').textContent = 'Ainda não há dados de território para este município. Eles são gerados pelo script 18 do pipeline.';
+      return;
+    }
+    anosDisponiveis(); preencherCargos(); preencherCandidatos(); await render();
+  }
+
+  async function iniciar() {
+    try { lista = await (await fetch(`${base}data/municipios.json`)).json(); }
+    catch { $('tr-aviso').textContent = 'Não foi possível carregar a lista de municípios. Recarregue a página.'; return; }
+    $('tr-lista').innerHTML = lista.map((m) => `<option value="${esc(m.nome)}"></option>`).join('');
+    const p = new URLSearchParams(location.search);
+    if (p.get('m') && lista.some((m) => m.ibge === p.get('m'))) st.ibge = p.get('m') as string;
+    if (p.get('a')) { st.ano = p.get('a') as string; ($('tr-ano') as HTMLSelectElement).value = st.ano; }
+    if (p.get('c')) st.chave = p.get('c') as string;
+    if (p.get('k')) st.cand = Number(p.get('k'));
+    if (p.get('g') === 'bairro') st.agr = 'bairro';
+    if (p.get('p') && METRICAS[p.get('p') as string]) st.cor = p.get('p') as string;
+    ($('tr-mun') as HTMLInputElement).value = lista.find((m) => m.ibge === st.ibge)?.nome ?? '';
+    ($('tr-agr') as HTMLSelectElement).value = st.agr; ($('tr-cor') as HTMLSelectElement).value = st.cor;
+
+    $('tr-mun').addEventListener('change', () => {
+      const m = lista.find((x) => sem(x.nome) === sem(($('tr-mun') as HTMLInputElement).value));
+      if (m) { st.ibge = m.ibge; st.cand = null; st.chave = ''; carregar(); }
+    });
+    $('tr-ano').addEventListener('change', () => {
+      st.ano = ($('tr-ano') as HTMLSelectElement).value; st.cand = null; st.chave = '';
+      preencherCargos(); preencherCandidatos(); render();
+    });
+    $('tr-cargo').addEventListener('change', () => { st.chave = ($('tr-cargo') as HTMLSelectElement).value; st.cand = null; preencherCandidatos(); render(); });
+    $('tr-cand').addEventListener('change', () => {
+      const b = bloco(); if (!b) return;
+      const v = sem(($('tr-cand') as HTMLInputElement).value);
+      const c = b.c.find((x) => sem(rotCand(x)) === v) ?? b.c.find((x) => sem(rotCand(x)).includes(v));
+      if (c) { st.cand = c[0]; ($('tr-cand') as HTMLInputElement).value = rotCand(c); st.ordem.k = ''; render(); }
+    });
+    $('tr-agr').addEventListener('change', () => { st.agr = ($('tr-agr') as HTMLSelectElement).value; st.ordem.k = ''; render(); });
+    $('tr-cor').addEventListener('change', () => { st.cor = ($('tr-cor') as HTMLSelectElement).value; render(); });
+    $('tr-tab').addEventListener('click', (ev) => {
+      const bt = (ev.target as HTMLElement).closest('button[data-k]') as HTMLButtonElement | null; if (!bt) return;
+      const k = bt.dataset.k as string; st.ordem = { k, dir: st.ordem.k === k ? -st.ordem.dir : (k === 'nome' || k === 'bairro' ? 1 : -1) }; tabela(linhasAtuais);
+    });
+    $('tr-csv').addEventListener('click', () => {
+      const url = URL.createObjectURL(new Blob(['\uFEFF' + csvTexto], { type: 'text/csv;charset=utf-8' }));
+      const a = document.createElement('a'); a.href = url; a.download = csvNome; a.click(); URL.revokeObjectURL(url);
+    });
+    await carregar();
+  }
+  iniciar();
+</script>

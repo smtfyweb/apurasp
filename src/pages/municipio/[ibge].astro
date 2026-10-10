@@ -1,0 +1,277 @@
+---
+import Base from '../../layouts/Base.astro';
+import Barras from '../../components/Barras.astro';
+import Empilhada from '../../components/Empilhada.astro';
+import { href } from '../../lib/url';
+import { listarIbge, carregar, simbolos } from '../../lib/dados';
+import { num, dec, pct, cap, titulo, reais } from '../../lib/fmt';
+import { corPartido, corNota, CAMPOS, NOTA_CAMPO } from '../../lib/cores';
+
+export async function getStaticPaths() {
+  const lista = await listarIbge();
+  return lista.map((ibge) => ({ params: { ibge } }));
+}
+
+const { ibge } = Astro.params;
+const m = await carregar(ibge as string);
+const ib = m.dados_ibge ?? {};
+const reg = ib.regiao ?? {};
+const sim = m.simbolos ?? {};
+const el = m.eleitorado ?? {};
+const e22 = el['2022'] ?? {}, e24 = el['2024'] ?? {}, e26 = el['2026'] ?? {};
+const ver = m.vereanca_2024;
+const pre = m.prefeito_2024;
+const dep = m.deputados ?? {};
+const esp = m.espectro?.dados ?? {};
+const res = m.resultados ?? {};
+const NOME_CARGO = { presidente: 'Presidente', governador: 'Governador', senador: 'Senador', prefeito: 'Prefeito' };
+const blocosMaj = [
+  ['2026', 'Eleição de 2026', ['presidente', 'governador', 'senador']],
+  ['2024', 'Eleição municipal de 2024', ['prefeito']],
+  ['2022', 'Eleição de 2022', ['presidente', 'governador', 'senador']],
+];
+const cargos = ['federal', 'estadual'];
+const anos = ['2026', '2022'];
+
+const SIMB = await simbolos();
+const sm = SIMB[m.ibge] ?? {};
+const bandeira = sm.bandeira ? href(`img/simbolos/${sm.bandeira.arquivo}`) : null;
+const brasao = sm.brasao ? href(`img/simbolos/${sm.brasao.arquivo}`) : null;
+const pibpc = ib.pib_mil_reais && ib.populacao_2022 ? (ib.pib_mil_reais * 1000) / ib.populacao_2022 : null;
+const variacao = e22.total && e26.total ? (e26.total / e22.total - 1) * 100 : null;
+
+const somar = (o: Record<string, number> = {}) => Object.values(o).reduce((a, b) => a + b, 0);
+const maiusc = (o: Record<string, number> = {}) => Object.fromEntries(Object.entries(o).map(([k, v]) => [k.toUpperCase(), v]));
+
+// eleitorado 2026
+const grupos: [string, number, number][] = [['16 e 17 anos', 0, 17], ['18 a 24 anos', 18, 24], ['25 a 34 anos', 25, 34], ['35 a 44 anos', 35, 44], ['45 a 59 anos', 45, 59], ['60 a 69 anos', 60, 69], ['70 anos ou mais', 70, 200]];
+const faixas = grupos.map(([r, a, b]) => [r, Object.entries(e26.faixa_etaria ?? {}).reduce((s: number, [k, v]) => { const i = parseInt(k, 10); return i >= a && i <= b ? s + (v as number) : s; }, 0)] as [string, number]);
+const totalFaixa = faixas.reduce((s, [, v]) => s + v, 0);
+const ORDEM_ESC = ['ANALFABETO', 'LÊ E ESCREVE', 'ENSINO FUNDAMENTAL INCOMPLETO', 'ENSINO FUNDAMENTAL COMPLETO', 'ENSINO MÉDIO INCOMPLETO', 'ENSINO MÉDIO COMPLETO', 'SUPERIOR INCOMPLETO', 'SUPERIOR COMPLETO'];
+const escMap = maiusc(e26.escolaridade);
+const chavesEsc = [...ORDEM_ESC.filter((k) => k in escMap), ...Object.keys(escMap).filter((k) => !ORDEM_ESC.includes(k))];
+const totalEsc = somar(escMap);
+const corMap = maiusc(e26.cor_raca);
+const totalCor = somar(corMap);
+const chavesCor = Object.keys(corMap).sort((a, b) => corMap[b] - corMap[a]);
+const itensPct = (pares: [string, number][], total: number) => pares.map(([rotulo, v]) => ({ rotulo, valor: total ? (v / total) * 100 : 0, texto: pct(total ? (v / total) * 100 : 0) }));
+
+// vereança x eleitorado
+const cadeiras = ver?.cadeiras ?? 0;
+const e24cor = maiusc(e24.cor_raca), totalCor24 = somar(e24cor);
+const semCor24 = totalCor24 ? (e24cor['NÃO INFORMADO'] ?? 0) / totalCor24 : 1;
+const mostraCorEleit = semCor24 < 0.5;
+const eleitosCor = maiusc(ver?.perfil_eleitos?.cor_raca);
+const linhasCor = [...new Set([...Object.keys(e24cor), ...Object.keys(eleitosCor)])].sort((a, b) => (e24cor[b] ?? 0) - (e24cor[a] ?? 0));
+const mulheres = ver?.perfil_eleitos?.genero?.FEMININO ?? 0;
+
+// economia
+const vab = ib.vab;
+const setores = vab ? [['Serviços, exceto administração pública', vab.servicos], ['Administração pública, educação e saúde públicas', vab.administracao_publica], ['Indústria', vab.industria], ['Agropecuária', vab.agropecuaria]] as [string, number][] : [];
+
+// espectro
+const linhasEsp = cargos.flatMap((cargo) => anos.map((ano) => ({ cargo, ano, r: esp[ano]?.[cargo] }))).filter((x) => x.r);
+---
+<Base titulo={`${m.nome}: eleitorado, votos e perfil | ApuraSP`} descricao={`Números oficiais, perfil do eleitorado, vereança, prefeito e deputados mais votados em ${m.nome} (SP).`}>
+  <main class="ficha">
+    <header class="ficha-cab">
+      {(bandeira || brasao) && (
+        <div class="simbolos">
+          {bandeira && <img src={bandeira} alt={`Bandeira de ${m.nome}`} loading="lazy" referrerpolicy="no-referrer" />}
+          {brasao && <img src={brasao} alt={`Brasão de ${m.nome}`} loading="lazy" referrerpolicy="no-referrer" />}
+        </div>
+      )}
+      <div>
+        <h1>{m.nome}</h1>
+        <p>{[reg.microrregiao && `Microrregião de ${reg.microrregiao}`, reg.mesorregiao && `Mesorregião ${reg.mesorregiao}`].filter(Boolean).join(', ')}</p>
+      </div>
+    </header>
+
+    <section aria-labelledby="h-num">
+      <h2 id="h-num">Números oficiais</h2>
+      <dl class="grade">
+        <div><dt>Habitantes (Censo 2022)</dt><dd>{num(ib.populacao_2022)}</dd></div>
+        <div><dt>Crescimento ao ano</dt><dd>{pct(ib.crescimento_anual_pct, 2)}</dd></div>
+        <div><dt>Área</dt><dd>{dec(ib.area_km2)} km²</dd></div>
+        <div><dt>Densidade</dt><dd>{num(ib.densidade_hab_km2)} hab/km²</dd></div>
+        <div><dt>PIB {ib.pib_ano ?? ''}</dt><dd>{reais(ib.pib_mil_reais)}</dd></div>
+        <div><dt>PIB por habitante</dt><dd>{pibpc ? `R$ ${num(pibpc)}` : '—'}</dd></div>
+      </dl>
+      <p class="fonte">Fonte: IBGE. O PIB por habitante divide o PIB de {ib.pib_ano ?? 'último ano'} pela população do Censo 2022.</p>
+      {vab && (
+        <Fragment>
+          <h3 class="sub">De onde vem a riqueza ({vab.ano})</h3>
+          <Barras itens={itensPct(setores, vab.total)} />
+          <p class="fonte">Valor adicionado bruto por setor, no ano mais recente com detalhamento no IBGE.</p>
+        </Fragment>
+      )}
+    </section>
+
+    <section aria-labelledby="h-el">
+      <h2 id="h-el">Quem vota em {m.nome}</h2>
+      <dl class="grade">
+        <div><dt>Eleitores em 2026</dt><dd>{num(e26.total)}</dd></div>
+        <div><dt>Variação desde 2022</dt><dd>{variacao == null ? '—' : `${variacao > 0 ? '+' : ''}${dec(variacao)}%`}</dd></div>
+        <div><dt>Mulheres</dt><dd>{pct(e26.pct_feminino)}</dd></div>
+      </dl>
+      <div class="colunas">
+        <div><h3 class="sub">Faixa etária</h3><Barras itens={itensPct(faixas, totalFaixa)} /></div>
+        <div><h3 class="sub">Escolaridade</h3><Barras itens={itensPct(chavesEsc.map((k) => [cap(k), escMap[k]] as [string, number]), totalEsc)} /></div>
+        <div><h3 class="sub">Cor ou raça declarada</h3><Barras itens={itensPct(chavesCor.map((k) => [cap(k), corMap[k]] as [string, number]), totalCor)} /></div>
+      </div>
+      <p><a class="abrir sec" href={href(`painel/?m=${m.ibge}`)}>Abrir o painel do eleitorado de {m.nome}</a></p>
+      <p><a class="abrir sec" href={href(`?m=${m.ibge}`)}>Ver o mapa de {m.nome} por local de votação</a></p>
+      <p><a class="abrir sec" href={href(`territorio/?m=${m.ibge}`)}>Ver escolas e bairros de {m.nome}</a></p>
+      <p class="fonte">Fonte: perfil do eleitorado do TSE, 2026. “Não informado” é a parcela sem declaração no cadastro.</p>
+    </section>
+
+    {pre && (
+      <section aria-labelledby="h-pre">
+        <h2 id="h-pre">Prefeito eleito em 2024</h2>
+        <p class="leitura">{titulo(pre.nome)} ({pre.partido}) venceu no {pre.turno}º turno com {num(pre.votos)} votos, {pct(pre.pct_validos)} dos votos válidos.</p>
+      </section>
+    )}
+
+    {ver && (
+      <section aria-labelledby="h-ver">
+        <h2 id="h-ver">Câmara de vereadores, eleição de 2024</h2>
+        <dl class="grade">
+          <div><dt>Cadeiras</dt><dd>{cadeiras}</dd></div>
+          <div><dt>Candidatos</dt><dd>{num(ver.candidatos)}</dd></div>
+          <div><dt>Menos votado entre os eleitos</dt><dd>{num(ver.menor_votacao_eleito)} votos</dd></div>
+        </dl>
+        <div class="colunas">
+          <div>
+            <h3 class="sub">Cadeiras por partido</h3>
+            <Barras itens={Object.entries(ver.cadeiras_por_partido ?? {}).map(([p, n]) => ({ rotulo: p, valor: n as number, texto: String(n), cor: corPartido(p) }))} />
+          </div>
+          <div>
+            <h3 class="sub">Quem a Câmara representa</h3>
+            <p class="leitura">{mulheres} de {cadeiras} eleitos são mulheres ({pct(cadeiras ? (mulheres / cadeiras) * 100 : null, 0)}). Entre os eleitores, elas são {pct(e24.pct_feminino)}.</p>
+            {mostraCorEleit ? (
+              <table class="tabela">
+                <thead><tr><th>Cor ou raça</th><th class="d">Eleitorado</th><th class="d">Eleitos</th></tr></thead>
+                <tbody>
+                  {linhasCor.map((k) => (
+                    <tr><td>{cap(k)}</td><td class="d">{pct(totalCor24 ? ((e24cor[k] ?? 0) / totalCor24) * 100 : null)}</td><td class="d">{pct(cadeiras ? ((eleitosCor[k] ?? 0) / cadeiras) * 100 : null)}</td></tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <Fragment>
+                <table class="tabela">
+                  <thead><tr><th>Cor ou raça dos eleitos</th><th class="d">Eleitos</th></tr></thead>
+                  <tbody>
+                    {linhasCor.filter((k) => (eleitosCor[k] ?? 0) > 0).map((k) => (
+                      <tr><td>{cap(k)}</td><td class="d">{eleitosCor[k]} de {cadeiras}</td></tr>
+                    ))}
+                  </tbody>
+                </table>
+                <p class="fonte">Não comparamos com o eleitorado porque {pct(semCor24 * 100, 0)} dos eleitores de {m.nome} aparecem sem cor ou raça no cadastro de 2024.</p>
+              </Fragment>
+            )}
+          </div>
+        </div>
+        <details>
+          <summary>Ver os {cadeiras} eleitos</summary>
+          <table class="tabela">
+            <thead><tr><th>Vereador(a)</th><th>Partido</th><th class="d">Votos</th></tr></thead>
+            <tbody>{(ver.eleitos ?? []).map((e) => <tr><td>{titulo(e.nome)}</td><td>{e.partido}</td><td class="d">{num(e.votos)}</td></tr>)}</tbody>
+          </table>
+        </details>
+      </section>
+    )}
+
+    <section aria-labelledby="h-maj">
+      <h2 id="h-maj">Presidente, governador, senador e prefeito</h2>
+      <p class="leitura">Os cinco mais votados em {m.nome}, com votos e percentual sobre os votos válidos. Quando houve segundo turno, a tabela mostra o segundo turno.</p>
+      {blocosMaj.map(([ano, tituloAno, cs]) => (
+        <details open={ano === '2026'}>
+          <summary>{tituloAno}</summary>
+          <div class="colunas">
+            {cs.map((cargo) => {
+              const r = res[ano]?.[cargo];
+              return r ? (
+                <div>
+                  <h3 class="sub">{NOME_CARGO[cargo]}{r.t === '2' ? ', 2º turno' : ''}</h3>
+                  <table class="tabela">
+                    <thead><tr><th>Candidato</th><th>Partido</th><th class="d">Votos</th><th class="d">%</th></tr></thead>
+                    <tbody>
+                      {r.c.map((c) => (
+                        <tr><td>{titulo(c[0])}{c[5] ? ', eleito(a)' : ''}</td><td>{c[2]}</td><td class="d">{num(c[3])}</td><td class="d">{dec(c[4])}</td></tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {ano === '2026' && cargo === 'senador' && <p class="fonte">Em 2026 cada eleitor votou em dois candidatos ao Senado, então os percentuais são sobre o total de votos.</p>}
+                </div>
+              ) : null;
+            })}
+          </div>
+        </details>
+      ))}
+      <p class="fonte">Fonte: TSE. Os dados de 2026 são do primeiro turno.</p>
+    </section>
+
+    <section aria-labelledby="h-dep">
+      <h2 id="h-dep">Deputados mais votados na cidade</h2>
+      <p class="leitura">Percentuais sobre os votos válidos do cargo em {m.nome}. “Eleito(a)” indica quem venceu no estado, não na cidade.</p>
+      {cargos.map((cargo) => (
+        <div class="bloco-cargo">
+          <h3>{cargo === 'federal' ? 'Deputado federal' : 'Deputado estadual'}</h3>
+          <div class="colunas">
+            {anos.map((ano) => {
+              const r = dep[ano]?.[cargo];
+              return (
+                <div>
+                  <h4>{ano}</h4>
+                  {r ? (
+                    <Fragment>
+                      <table class="tabela">
+                        <thead><tr><th>Candidato</th><th>Partido</th><th class="d">Votos</th><th class="d">%</th></tr></thead>
+                        <tbody>
+                          {r.candidatos.slice(0, 5).map((c) => (
+                            <tr><td>{titulo(c.nome)}{c.eleito_no_estado ? ', eleito(a)' : ''}</td><td>{c.partido}</td><td class="d">{num(c.votos)}</td><td class="d">{dec(c.pct)}</td></tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      <h5 class="sub">Partidos</h5>
+                      <Barras itens={r.partidos.slice(0, 5).map((p) => ({ rotulo: p.partido, valor: p.pct ?? 0, texto: pct(p.pct), cor: corPartido(p.partido) }))} />
+                    </Fragment>
+                  ) : <p>Sem dados.</p>}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+    </section>
+
+    {linhasEsp.length > 0 && (
+      <section aria-labelledby="h-esp">
+        <h2 id="h-esp">Para onde foram os votos, por campo político</h2>
+        {linhasEsp.map(({ cargo, ano, r }) => (
+          <div class="linha-esp">
+            <span>{cargo === 'federal' ? 'Federal' : 'Estadual'} {ano}</span>
+            <Empilhada
+              descricao={`Votos para deputado ${cargo} em ${ano}, por campo político`}
+              segmentos={[...CAMPOS.map((c) => ({ rotulo: c, valor: r[c] ?? 0, cor: corNota(NOTA_CAMPO[c]) })), { rotulo: 'sem classificação', valor: r['sem classificação'] ?? 0, cor: '#B8C0CC' }]}
+            />
+            <span class="d">nota {dec(r.nota_media)}</span>
+          </div>
+        ))}
+        <ul class="chips" style="margin-top:.75rem">
+          {CAMPOS.map((c) => <li><i style={`background:${corNota(NOTA_CAMPO[c])}`}></i>{cap(c)}</li>)}
+          <li><i style="background:#B8C0CC"></i>Sem classificação</li>
+        </ul>
+        <div class="aviso">
+          <p>Cada cor mostra a parcela dos votos que foi para partidos de um campo, segundo a classificação de especialistas feita em 2022. A classificação rotula a legenda e não muda quando um candidato troca de partido. Por isso, uma mudança de campo entre 2022 e 2026 pode refletir migração partidária, e não mudança de opinião dos eleitores.</p>
+        </div>
+      </section>
+    )}
+
+    <p class="fonte">
+      Fontes: TSE (dados abertos) e IBGE. {(bandeira || brasao) && <Fragment>Bandeira e brasão: Wikimedia Commons, com autor e licença na página de <a href={href('creditos/')}>créditos</a>. </Fragment>}
+      <a href={`${import.meta.env.BASE_URL.replace(/\/?$/, '/')}metodologia/`}>Metodologia</a>.
+    </p>
+  </main>
+</Base>

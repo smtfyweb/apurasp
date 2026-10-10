@@ -1,0 +1,15 @@
+---
+interface Item { rotulo: string; valor: number; texto?: string; cor?: string }
+interface Props { itens: Item[]; max?: number }
+const { itens, max } = Astro.props;
+const teto = max ?? Math.max(1, ...itens.map((i) => i.valor));
+---
+<ul class="barras">
+  {itens.map((i) => (
+    <li>
+      <span class="rot">{i.rotulo}</span>
+      <span class="trilha"><span class="preenche" style={`width:${Math.max(0, Math.min(100, (i.valor / teto) * 100))}%;background:${i.cor ?? 'var(--barra)'}`}></span></span>
+      <span class="val">{i.texto ?? ''}</span>
+    </li>
+  ))}
+</ul>

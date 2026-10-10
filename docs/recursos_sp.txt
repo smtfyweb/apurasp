@@ -1,0 +1,189 @@
+## candidatos-2022  (Candidatos - 2022) atualizado 2024-08-14
+-        ? | Candidatos | https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_cand/consulta_cand_2022.zip
+-        ? | Candidatos - Informações complementares | https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_cand_complementar/consulta_cand_complementar_2022.zip
+-        ? | Bens de candidatos | https://cdn.tse.jus.br/estatistica/sead/odsele/bem_candidato/bem_candidato_2022.zip
+-        ? | Coligações | https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_coligacao/consulta_coligacao_2022.zip
+-        ? | Vagas | https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_vagas/consulta_vagas_2022.zip
+-        ? | Motivo da Cassação | https://cdn.tse.jus.br/estatistica/sead/odsele/motivo_cassacao/motivo_cassacao_2022.zip
+-        ? | BR - Redes sociais de candidatos | https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_cand/rede_social_candidato_2022_BR.zip
+-        ? | SP - Redes sociais de candidatos | https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_cand/rede_social_candidato_2022_SP.zip
+-        ? | BR - Fotos de candidatos | https://cdn.tse.jus.br/estatistica/sead/eleicoes/eleicoes2022/fotos/foto_cand2022_BR_div.zip
+-        ? | SP - Fotos de candidatos | https://cdn.tse.jus.br/estatistica/sead/eleicoes/eleicoes2022/fotos/foto_cand2022_SP_div.zip
+-        ? | BR - Proposta de governo | https://cdn.tse.jus.br/estatistica/sead/odsele/proposta_governo/proposta_governo_2022_BR.zip
+-        ? | SP - Proposta de governo | https://cdn.tse.jus.br/estatistica/sead/odsele/proposta_governo/proposta_governo_2022_SP.zip
+-        ? | BR - Certidões criminais | https://cdn.tse.jus.br/estatistica/sead/odsele/certidao_criminal/certidao_criminal_2022_BR.zip
+-        ? | SP - Certidões criminais  | https://cdn.tse.jus.br/estatistica/sead/odsele/certidao_criminal/certidao_criminal_2022_SP.zip
+-        ? | BR - Notas fiscais | https://cdn.tse.jus.br/estatistica/sead/odsele/nota_fiscal_candidato/nota_fiscal_candidato_2022_BR.zip
+-        ? | SP - Notas fiscais | https://cdn.tse.jus.br/estatistica/sead/odsele/nota_fiscal_candidato/nota_fiscal_candidato_2022_SP.zip
+  (16 de 144 arquivos mantidos)
+
+## candidatos-2024  (Candidatos - 2024) atualizado 2025-06-17
+-        ? | Candidatos | https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_cand/consulta_cand_2024.zip
+-        ? | Candidatos - Informações complementares | https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_cand_complementar/consulta_cand_complementar_2024.zip
+-        ? | Bens de candidatos | https://cdn.tse.jus.br/estatistica/sead/odsele/bem_candidato/bem_candidato_2024.zip
+-        ? | Coligações | https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_coligacao/consulta_coligacao_2024.zip
+-        ? | Vagas | https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_vagas/consulta_vagas_2024.zip
+-        ? | Motivo da Cassação | https://cdn.tse.jus.br/estatistica/sead/odsele/motivo_cassacao/motivo_cassacao_2024.zip
+-        ? | Redes sociais de candidatos | https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_cand/rede_social_candidato_2024.zip
+-        ? | SP - Fotos de candidatos | https://cdn.tse.jus.br/estatistica/sead/eleicoes/eleicoes2024/fotos/foto_cand2024_SP_div.zip
+-        ? | SP - Proposta de governo | https://cdn.tse.jus.br/estatistica/sead/odsele/proposta_governo/proposta_governo_2024_SP.zip
+  (9 de 60 arquivos mantidos)
+
+## candidatos-2026  (Candidatos - 2026) atualizado 2026-09-16
+-        ? | Candidatos | https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_cand/consulta_cand_2026.zip
+-        ? | Candidatos - Informações complementares | https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_cand_complementar/consulta_cand_complementar_2026.zip
+-        ? | Bens de candidatos | https://cdn.tse.jus.br/estatistica/sead/odsele/bem_candidato/bem_candidato_2026.zip
+-        ? | Coligações | https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_coligacao/consulta_coligacao_2026.zip
+-        ? | Vagas | https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_vagas/consulta_vagas_2026.zip
+-        ? | Motivo da Cassação | https://cdn.tse.jus.br/estatistica/sead/odsele/motivo_cassacao/motivo_cassacao_2026.zip
+-        ? | Redes sociais de candidatos | https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_cand/rede_social_candidato_2026.zip
+-        ? | Histórico de candidaturas | https://cdn.tse.jus.br/estatistica/sead/odsele/historico_candidatura/historico_candidatura_2026.zip
+-        ? | BR - Fotos de candidatos | https://cdn.tse.jus.br/estatistica/sead/eleicoes/eleicoes2026/fotos/foto_cand2026_BR_div.zip
+-        ? | SP - Fotos de candidatos | https://cdn.tse.jus.br/estatistica/sead/eleicoes/eleicoes2026/fotos/foto_cand2026_SP_div.zip
+-        ? | BR - Proposta de governo | https://cdn.tse.jus.br/estatistica/sead/odsele/proposta_governo/proposta_governo_2026_BR.zip
+-        ? | SP - Proposta de governo | https://cdn.tse.jus.br/estatistica/sead/odsele/proposta_governo/proposta_governo_2026_SP.zip
+-        ? | BR - Certidões criminais | https://cdn.tse.jus.br/estatistica/sead/odsele/certidao_criminal/certidao_criminal_2026_BR.zip
+-        ? | SP - Certidões criminais | https://cdn.tse.jus.br/estatistica/sead/odsele/certidao_criminal/certidao_criminal_2026_SP.zip
+  (14 de 92 arquivos mantidos)
+
+## eleitorado-2022  (Eleitorado - 2022) atualizado 2024-07-18
+-        ? | Eleitorado - 2022 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitorado/perfil_eleitorado_2022.zip
+-        ? | Perfil do eleitorado com deficiência - 2022 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_deficiente/perfil_eleitor_deficiencia_2022.zip
+-        ? | Eleitorado por local de votação - 2022 | https://cdn.tse.jus.br/estatistica/sead/odsele/eleitorado_locais_votacao/eleitorado_local_votacao_2022.zip
+-        ? | Transferência temporária do eleitorado - 2022 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_tte/transferencia_temporaria_2022.zip
+-        ? | Transferência temporária do eleitorado por seção - 2022 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_tte/transf_temporaria_secao_2022.zip
+-        ? | Seções Agregadas - 2022 | https://cdn.tse.jus.br/estatistica/sead/odsele/secoes_agregadas/secoes_agregadas_2022.zip
+-        ? | SP - Perfil do eleitorado por seção eleitoral - 2022 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_secao/perfil_eleitor_secao_2022_SP.zip
+-        ? | ZZ - Perfil do eleitorado por seção eleitoral - 2022 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_secao/perfil_eleitor_secao_2022_ZZ.zip
+  (8 de 34 arquivos mantidos)
+
+## eleitorado-2024  (Eleitorado - 2024) atualizado 2026-01-20
+-        ? | Eleitorado - 2024 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitorado/perfil_eleitorado_2024.zip
+-        ? | Perfil do eleitorado com deficiência - 2024 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_deficiente/perfil_eleitor_deficiencia_2024.zip
+-        ? | Eleitorado por local de votação - 2024 | https://cdn.tse.jus.br/estatistica/sead/odsele/eleitorado_locais_votacao/eleitorado_local_votacao_2024.zip
+-        ? | Transferência temporária do eleitorado - 2024 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_tte/transferencia_temporaria_2024.zip
+-        ? | Transferência temporária do eleitorado por seção - 2024 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_tte/transf_temporaria_secao_2024.zip
+-        ? | SP - Perfil do eleitorado por seção eleitoral - 2024 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_secao/perfil_eleitor_secao_2024_SP.zip
+  (6 de 31 arquivos mantidos)
+
+## eleitorado-2026  (Eleitorado - 2026) atualizado 2026-09-11
+-        ? | Eleitorado - 2026 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitorado/perfil_eleitorado_2026.zip
+-        ? | Perfil do eleitorado com deficiência - 2026 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_deficiente/perfil_eleitor_deficiencia_2026.zip
+-        ? | Eleitorado por local de votação - 2026 | https://cdn.tse.jus.br/estatistica/sead/odsele/eleitorado_locais_votacao/eleitorado_local_votacao_2026.zip
+-        ? | Transferência temporária do eleitorado - 2026 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_tte/transferencia_temporaria_2026.zip
+-        ? | Transferência temporária do eleitorado por seção - 2026 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_tte/transf_temporaria_secao_2026.zip
+-        ? | SP - Perfil do eleitorado por seção eleitoral - 2026 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_secao/perfil_eleitor_secao_2026_SP.zip
+-        ? | ZZ - Perfil do eleitorado por seção eleitoral - 2026 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_secao/perfil_eleitor_secao_2026_ZZ.zip
+  (7 de 33 arquivos mantidos)
+
+## resultados-2022  (Resultados - 2022) atualizado 2022-11-05
+-        ? | BR - Histórico totalização Presidente 1º Turno - 2022 | https://cdn.tse.jus.br/estatistica/sead/eleicoes/eleicoes2022/Historico_Totalizacao_Presidente_BR_1T_2022.zip
+-        ? | BR - Histórico totalização Presidente 2º Turno - 2022 | https://cdn.tse.jus.br/estatistica/sead/eleicoes/eleicoes2022/Historico_Totalizacao_Presidente_BR_2T_2022.zip
+-        ? | Votação nominal por município e zona | https://cdn.tse.jus.br/estatistica/sead/odsele/votacao_candidato_munzona/votacao_candidato_munzona_2022.zip
+-        ? | Votação em partido por município e zona  | https://cdn.tse.jus.br/estatistica/sead/odsele/votacao_partido_munzona/votacao_partido_munzona_2022.zip
+-        ? | Detalhe da apuração por município e zona | https://cdn.tse.jus.br/estatistica/sead/odsele/detalhe_votacao_munzona/detalhe_votacao_munzona_2022.zip
+-        ? | Detalhe da apuração por seção eleitoral | https://cdn.tse.jus.br/estatistica/sead/odsele/detalhe_votacao_secao/detalhe_votacao_secao_2022.zip
+-        ? | Presidente - Votação por seção eleitoral - 2022 | https://cdn.tse.jus.br/estatistica/sead/odsele/votacao_secao/votacao_secao_2022_BR.zip
+-        ? | SP - Votação por seção eleitoral - 2022 | https://cdn.tse.jus.br/estatistica/sead/odsele/votacao_secao/votacao_secao_2022_SP.zip
+  (8 de 34 arquivos mantidos)
+
+## resultados-2024  (Resultados - 2024) atualizado 2024-10-10
+-        ? | Votação nominal por município e zona | https://cdn.tse.jus.br/estatistica/sead/odsele/votacao_candidato_munzona/votacao_candidato_munzona_2024.zip
+-        ? | Votação em partido por município e zona  | https://cdn.tse.jus.br/estatistica/sead/odsele/votacao_partido_munzona/votacao_partido_munzona_2024.zip
+-        ? | Detalhe da apuração por município e zona | https://cdn.tse.jus.br/estatistica/sead/odsele/detalhe_votacao_munzona/detalhe_votacao_munzona_2024.zip
+-        ? | Detalhe da apuração por seção eleitoral | https://cdn.tse.jus.br/estatistica/sead/odsele/detalhe_votacao_secao/detalhe_votacao_secao_2024.zip
+-        ? | SP - Relatório de Totalização - 2024 | https://cdn.tse.jus.br/estatistica/sead/odsele/relatorio_resultado_totalizacao/Relatorio_Resultado_Totalizacao_2024_SP.zip
+-        ? | SP - Votação por seção eleitoral - 2024 | https://cdn.tse.jus.br/estatistica/sead/odsele/votacao_secao/votacao_secao_2024_SP.zip
+  (6 de 56 arquivos mantidos)
+
+## resultados-2026  (Resultados - 2026) atualizado 2026-10-06
+-        ? | BR - Relatório de Totalização - 2026 | https://cdn.tse.jus.br/estatistica/sead/odsele/relatorio_resultado_totalizacao/Relatorio_Resultado_Totalizacao_2026_BR.zip
+-        ? | SP - Relatório de Totalização - 2026 | https://cdn.tse.jus.br/estatistica/sead/odsele/relatorio_resultado_totalizacao/Relatorio_Resultado_Totalizacao_2026_SP.zip
+-        ? | ZZ - Relatório de Totalização - 2026 | https://cdn.tse.jus.br/estatistica/sead/odsele/relatorio_resultado_totalizacao/Relatorio_Resultado_Totalizacao_2026_ZZ.zip
+  (3 de 28 arquivos mantidos)
+
+## comparecimento-e-abstencao-2022  (Comparecimento e Abstenção - 2022) atualizado 2022-10-25
+-        ? | Comparecimento e Abstenção | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_comparecimento_abstencao/perfil_comparecimento_abstencao_2022.zip
+-        ? | Pessoas com deficiência | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_comparecimento_abstencao_eleitor_deficiente/perfil_comparecimento_abstencao_eleitor_deficiente_2022.zip
+-        ? | Transferência temporária de eleitor | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_comparecimento_abstencao_eleitor_tte/perfil_comparecimento_abstencao_eleitor_tte_2022.zip
+  (3 de 3 arquivos mantidos)
+
+## comparecimento-e-abstencao-2024  (Comparecimento e Abstenção - 2024) atualizado 2024-10-18
+-        ? | Comparecimento e Abstenção | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_comparecimento_abstencao/perfil_comparecimento_abstencao_2024.zip
+-        ? | Pessoas com deficiência | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_comparecimento_abstencao_eleitor_deficiente/perfil_comparecimento_abstencao_eleitor_deficiente_2024.zip
+-        ? | Transferência temporária de eleitor | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_comparecimento_abstencao_eleitor_tte/perfil_comparecimento_abstencao_eleitor_tte_2024.zip
+  (3 de 3 arquivos mantidos)
+
+## dadosabertos-tse-jus-br-dataset-prestacao-de-contas-eleitorais-2022  (Prestação de Contas Eleitorais - 2022) atualizado 2026-08-21
+-        ? | Prestação de contas de órgãos partidários | https://cdn.tse.jus.br/estatistica/sead/odsele/prestacao_contas/prestacao_de_contas_eleitorais_orgaos_partidarios_2022.zip
+-        ? | Prestação de contas de candidatos | https://cdn.tse.jus.br/estatistica/sead/odsele/prestacao_contas/prestacao_de_contas_eleitorais_candidatos_2022.zip
+-        ? | CNPJ – Campanha | https://cdn.tse.jus.br/estatistica/sead/odsele/prestacao_contas/CNPJ_campanha_2022.zip
+-        ? | Extratos Bancários de Partidos | https://cdn.tse.jus.br/estatistica/sead/odsele/prestacao_contas_anual_partidaria/extrato_bancario_partido_2022.zip
+-        ? | Extratos Bancários de Candidatos | https://cdn.tse.jus.br/estatistica/sead/odsele/prestacao_contas_anual_candidato/extrato_bancario_candidato_2022.zip
+-        ? | Fundo Partidário (FP) e Fundo Especial de Financiamento de Campanha (FEFC) | https://cdn.tse.jus.br/estatistica/sead/odsele/fefc_fp/fefc_fp_2022.zip
+  (6 de 6 arquivos mantidos)
+
+## prestacao-de-contas-eleitorais-2024  (Prestação de Contas Eleitorais - 2024) atualizado 2026-08-21
+-        ? | Prestação de contas de órgãos partidários | https://cdn.tse.jus.br/estatistica/sead/odsele/prestacao_contas/prestacao_de_contas_eleitorais_orgaos_partidarios_2024.zip
+-        ? | Prestação de contas de candidatos | https://cdn.tse.jus.br/estatistica/sead/odsele/prestacao_contas/prestacao_de_contas_eleitorais_candidatos_2024.zip
+-        ? | CNPJ – Campanha | https://cdn.tse.jus.br/estatistica/sead/odsele/prestacao_contas/CNPJ_campanha_2024.zip
+-        ? | Extratos Bancários de Partidos | https://cdn.tse.jus.br/estatistica/sead/odsele/prestacao_contas_anual_partidaria/extrato_bancario_partido_2024.zip
+-        ? | Extratos Bancários de Candidatos | https://cdn.tse.jus.br/estatistica/sead/odsele/prestacao_contas_anual_candidato/extrato_bancario_candidato_2024.zip
+-        ? | Fundo Partidário (FP) e Fundo Especial de Financiamento de Campanha (FEFC) | https://cdn.tse.jus.br/estatistica/sead/odsele/fefc_fp/fefc_fp_2024.zip
+  (6 de 6 arquivos mantidos)
+
+## prestacao-de-contas-eleitorais-2026  (Prestação de Contas Eleitorais - 2026) atualizado 2026-09-22
+-        ? | CNPJ – Campanha | https://cdn.tse.jus.br/estatistica/sead/odsele/prestacao_contas/CNPJ_campanha_2026.zip
+-        ? | Prestação de contas de órgãos partidários | https://cdn.tse.jus.br/estatistica/sead/odsele/prestacao_contas/prestacao_de_contas_eleitorais_orgaos_partidarios_2026.zip
+-        ? | Prestação de contas de candidatos | https://cdn.tse.jus.br/estatistica/sead/odsele/prestacao_contas/prestacao_de_contas_eleitorais_candidatos_2026.zip
+-        ? | Extratos Bancários de Partidos | https://cdn.tse.jus.br/estatistica/sead/odsele/prestacao_contas_anual_partidaria/extrato_bancario_partido_2026.zip
+-        ? | Extratos Bancários de Candidatos | https://cdn.tse.jus.br/estatistica/sead/odsele/prestacao_contas_anual_candidato/extrato_bancario_candidato_2026.zip
+-        ? | Documentos fiscais de despesa | https://cdn.tse.jus.br/estatistica/sead/odsele/prestacao_contas/despesa_documento_2026.zip
+-        ? | Documentos fiscais de receita | https://cdn.tse.jus.br/estatistica/sead/odsele/prestacao_contas/receita_documento_2026.zip
+  (7 de 7 arquivos mantidos)
+
+## codigos-oficiais-de-uf-e-municipios-segundo-o-tse-e-o-ibge  (Códigos oficiais de UF e municípios segundo o TSE e o IBGE) atualizado 2025-06-24
+-        ? | Códigos oficiais de UF e municípios segundo o TSE e o IBGE | https://cdn.tse.jus.br/estatistica/sead/odsele/municipio_tse_ibge/municipio_tse_ibge.zip
+  (1 de 1 arquivos mantidos)
+
+## rae-requerimento-de-alistamento-eleitoral  (RAE - Requerimento de alistamento eleitoral) atualizado 2026-03-12
+-        ? | Perfil RAE - 2026 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_rae/perfil_rae_2026.zip
+-        ? | Perfil RAE - 2025 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_rae/perfil_rae_2025.zip
+-        ? | Perfil RAE - 2024 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_rae/perfil_rae_2024.zip
+-        ? | Perfil RAE - 2023 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_rae/perfil_rae_2023.zip
+-        ? | Perfil RAE - 2022 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_rae/perfil_rae_2022.zip
+-        ? | Perfil RAE - 2021 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_rae/perfil_rae_2021.zip
+-        ? | Perfil RAE - 2020 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_rae/perfil_rae_2020.zip
+-        ? | Perfil RAE - 2019 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_rae/perfil_rae_2019.zip
+-        ? | Perfil RAE - 2018 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_rae/perfil_rae_2018.zip
+-        ? | Perfil RAE - 2017 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_rae/perfil_rae_2017.zip
+-        ? | Perfil RAE - 2016 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_rae/perfil_rae_2016.zip
+-        ? | Perfil RAE - 2015 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_rae/perfil_rae_2015.zip
+-        ? | Perfil RAE - 2014 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_rae/perfil_rae_2014.zip
+-        ? | Perfil RAE - 2013 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_rae/perfil_rae_2013.zip
+-        ? | Perfil RAE - 2012 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_rae/perfil_rae_2012.zip
+-        ? | Perfil RAE - 2011 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_rae/perfil_rae_2011.zip
+-        ? | Perfil RAE - 2010 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_rae/perfil_rae_2010.zip
+-        ? | Perfil RAE - 2009 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_rae/perfil_rae_2009.zip
+  (18 de 18 arquivos mantidos)
+
+## transferencia-do-eleitorado  (Transferência do eleitorado) atualizado 2026-03-18
+-        ? | Perfil de transferência - 2026 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_transferencia/perfil_eleitorado_transferencia_2026.zip
+-        ? | Perfil de transferência - 2025 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_transferencia/perfil_eleitorado_transferencia_2025.zip
+-        ? | Perfil de transferência - 2024 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_transferencia/perfil_eleitorado_transferencia_2024.zip
+-        ? | Perfil de transferência - 2023 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_transferencia/perfil_eleitorado_transferencia_2023.zip
+-        ? | Perfil de transferência - 2022 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_transferencia/perfil_eleitorado_transferencia_2022.zip
+-        ? | Perfil de transferência - 2021 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_transferencia/perfil_eleitorado_transferencia_2021.zip
+-        ? | Perfil de transferência - 2020 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_transferencia/perfil_eleitorado_transferencia_2020.zip
+-        ? | Perfil de transferência - 2019 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_transferencia/perfil_eleitorado_transferencia_2019.zip
+-        ? | Perfil de transferência - 2018 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_transferencia/perfil_eleitorado_transferencia_2018.zip
+-        ? | Perfil de transferência - 2017 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_transferencia/perfil_eleitorado_transferencia_2017.zip
+-        ? | Perfil de transferência - 2016 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_transferencia/perfil_eleitorado_transferencia_2016.zip
+-        ? | Perfil de transferência - 2015 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_transferencia/perfil_eleitorado_transferencia_2015.zip
+-        ? | Perfil de transferência - 2014 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_transferencia/perfil_eleitorado_transferencia_2014.zip
+-        ? | Perfil de transferência - 2013 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_transferencia/perfil_eleitorado_transferencia_2013.zip
+-        ? | Perfil de transferência - 2012 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_transferencia/perfil_eleitorado_transferencia_2012.zip
+-        ? | Perfil de transferência - 2011 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_transferencia/perfil_eleitorado_transferencia_2011.zip
+-        ? | Perfil de transferência - 2010 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_transferencia/perfil_eleitorado_transferencia_2010.zip
+-        ? | Perfil de transferência - 2009 | https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitor_transferencia/perfil_eleitorado_transferencia_2009.zip
+  (18 de 18 arquivos mantidos)

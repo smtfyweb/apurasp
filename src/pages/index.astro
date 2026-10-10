@@ -1,0 +1,532 @@
+---
+import Base from '../layouts/Base.astro';
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
+import { geoIdentity, geoPath } from 'd3-geo';
+import { BASE } from '../lib/url';
+
+const raiz = process.cwd();
+const geo = JSON.parse(await readFile(path.join(raiz, 'data', 'geo', 'sp_municipios.geojson'), 'utf-8'));
+const lista: { ibge: string; nome: string }[] = JSON.parse(await readFile(path.join(raiz, 'public', 'data', 'municipios.json'), 'utf-8'));
+
+const k = Math.cos((22.5 * Math.PI) / 180);
+const plano = (c: any): any => (typeof c[0] === 'number' ? [c[0] * k, c[1]] : c.map(plano));
+const fc: any = { type: 'FeatureCollection', features: geo.features.map((f: any) => ({ ...f, geometry: { ...f.geometry, coordinates: plano(f.geometry.coordinates) } })) };
+const caminho = geoPath(geoIdentity().reflectY(true).fitSize([900, 760], fc)).digits(1);
+const [[x0, y0], [x1, y1]] = caminho.bounds(fc);
+const viewBox = `${(x0 - 6).toFixed(0)} ${(y0 - 6).toFixed(0)} ${(x1 - x0 + 12).toFixed(0)} ${(y1 - y0 + 12).toFixed(0)}`;
+const paths = fc.features.map((f: any) => ({ id: String(f.properties.codarea), d: caminho(f) })).filter((p: any) => p.d);
+const principais = [['federal', 'Deputado federal', '2022,2026'], ['estadual', 'Deputado estadual', '2022,2026'], ['vereador', 'Vereador', '2024'], ['prefeito', 'Prefeito', '2024']];
+const majoritarios = [['presidente', 'Presidente', '2022,2026'], ['governador', 'Governador', '2022,2026'], ['senador', 'Senador', '2022,2026']];
+---
+<Base titulo="ApuraSP: como São Paulo votou" atual="mapa">
+  <main id="app-mapa" class="mapa-app" data-base={BASE}>
+    <section class="controles" aria-label="Controles do mapa">
+      <h1>Como São Paulo votou</h1>
+      <p>O mapa mostra quem venceu em cada um dos 645 municípios, de 2022 até hoje. Escolha a eleição, o cargo e o que pintar. Clique num município, ou busque pelo nome, para ver o mapa dele por local de votação.</p>
+      <div class="campo">
+        <label for="sel-ano">Eleição</label>
+        <select id="sel-ano"><option value="2026" selected>2026</option><option value="2024">2024</option><option value="2022">2022</option></select>
+      </div>
+      <div class="campo">
+        <label for="sel-cargo">Cargo</label>
+        <select id="sel-cargo">
+          <optgroup label="Cargos principais">
+            {principais.map(([v, rot, anos]) => <option value={v} data-anos={anos} selected={v === 'federal'}>{rot}</option>)}
+          </optgroup>
+          <optgroup label="Eleições majoritárias">
+            {majoritarios.map(([v, rot, anos]) => <option value={v} data-anos={anos}>{rot}</option>)}
+          </optgroup>
+        </select>
+      </div>
+      <div class="campo">
+        <label for="sel-modo">Pintar por</label>
+        <select id="sel-modo">
+          <option value="partido" selected>Partido</option>
+          <option value="nota">Espectro</option>
+          <option value="perfil" hidden>Perfil do eleitorado</option>
+        </select>
+      </div>
+      <div id="perfil-box" class="campo" hidden>
+        <label for="perfil-sel">Característica do eleitorado</label>
+        <select id="perfil-sel">
+          <option value="f">Mulheres</option><option value="j">16 a 24 anos</option>
+          <option value="i">60 anos ou mais</option><option value="u">Ensino superior completo</option>
+        </select>
+      </div>
+      <div class="campo busca">
+        <label for="busca">Buscar município</label>
+        <input id="busca" list="lista-municipios" autocomplete="off" placeholder="Digite o nome" />
+        <datalist id="lista-municipios">{lista.map((m) => <option value={m.nome}></option>)}</datalist>
+      </div>
+      <p id="regra" class="regra"></p>
+      <div id="legenda" class="legenda" aria-live="polite"></div>
+      <details class="como">
+        <summary>Como usar o mapa</summary>
+        <ol>
+          <li>Escolha a eleição e o cargo. Cargos sem dados na eleição escolhida aparecem apagados na lista.</li>
+          <li>Escolha o que pintar: o partido vencedor ou a posição média no espectro.</li>
+          <li>Passe o mouse sobre um município, ou toque nele, para ver os números no painel à direita.</li>
+          <li>Clique no município, ou busque o nome, para abrir o mapa dele dividido por local de votação. O botão “Voltar ao estado” traz o mapa inteiro de volta.</li>
+          <li>Dentro do município, passe o mouse numa área para ver o local, o bairro, os votos e o perfil de quem vota ali.</li>
+        </ol>
+        <p class="pequena"><a href={`${BASE}guia/`}>Veja todas as regras do mapa</a>.</p>
+      </details>
+    </section>
+
+    <section class="palco" aria-label="Mapa dos municípios de São Paulo">
+      <div id="foco-barra" class="foco-barra" hidden>
+        <button type="button" id="voltar" class="btn-ghost">Voltar ao estado</button>
+        <span id="foco-nome" class="foco-nome"></span>
+      </div>
+      <svg id="svg-estado" viewBox={viewBox} role="img" aria-label="Mapa do estado de São Paulo dividido em municípios. Use a busca para escolher um município pelo teclado.">
+        {paths.map((p: any) => <path d={p.d} data-i={p.id}></path>)}
+        <path id="destaque" d=""></path>
+      </svg>
+      <div id="micro" hidden>
+        <svg id="svg-micro" role="img" aria-label="Mapa do município dividido por local de votação"></svg>
+        <p id="micro-aviso" class="fonte" role="status"></p>
+      </div>
+    </section>
+
+    <aside id="painel" class="painel" tabindex="-1" aria-label="Números do município selecionado"></aside>
+  </main>
+</Base>
+
+<script>
+  import { Delaunay } from 'd3-delaunay';
+  import { corPartido, corNota, GRADIENTE, CAMPOS, NOTA_CAMPO } from '../lib/cores';
+  import { titulo } from '../lib/fmt';
+  import { melhorarCaixas } from '../lib/combobox';
+  import { melhorarSeletores } from '../lib/seletor';
+  melhorarCaixas();
+  melhorarSeletores();
+
+  type Cand = [string, string, string, number, number, number];
+  type Part = [string, number, number];
+  type Reg = { v: number; t: string | null; w: string | null; c: Cand[]; p: Part[]; e: number[]; nota: number | null; s?: [string, number][]; cad?: number };
+  type Muni = { n: string; pop: number | null; el: number | null; d: Record<string, Record<string, Reg>> };
+  type Dados = { estado: Record<string, Record<string, Reg>>; m: Record<string, Muni> };
+  type LocalM = { id: string; n: string; b: string | null; la: number | null; lo: number | null; el: number | null; s: number; pt?: number; f?: number; j?: number; i?: number; u?: number };
+  type VotoM = { t: string; val: number[]; p: [string, number][]; pv: number[][]; c: [number, string, string | null, number][]; v: number[][] };
+  type Micro = { ibge: string; nome: string; locais: Record<string, LocalM[]>; votos: Record<string, Record<string, VotoM>> };
+  type Site = { idx: number[]; x: number; y: number };
+  type Vista = { locs: LocalM[]; sites: Site[]; bloco: VotoM | null; chave: string | null; valS: number[]; partS: number[][]; cellD: string[] };
+
+  const NOMES: Record<string, string> = { presidente: 'Presidente', governador: 'Governador', senador: 'Senador', federal: 'Deputado federal', estadual: 'Deputado estadual', prefeito: 'Prefeito', vereador: 'Vereador' };
+  const SEM_PARTIDOS = new Set(['presidente', 'governador', 'prefeito']);
+  const MUNICIPAIS = new Set(['prefeito', 'vereador']);
+  const PERFIL_ROT: Record<string, string> = { f: 'Mulheres', j: '16 a 24 anos', i: '60 anos ou mais', u: 'Ensino superior completo' };
+  const K = Math.cos((22.5 * Math.PI) / 180);
+  const MIN_VALIDOS = 100;
+  const CLARO = [226, 236, 246], ESCURO = [18, 63, 122];
+  const CINZA = '#D9DEE5';
+  const mix = (a: number[], b: number[], t: number) => `rgb(${a.map((v, i) => Math.round(v + (b[i] - v) * t)).join(',')})`;
+  const normSigla = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+  const app = document.getElementById('app-mapa') as HTMLElement;
+  const base = app.dataset.base ?? '/';
+  const painel = document.getElementById('painel') as HTMLElement;
+  const legenda = document.getElementById('legenda') as HTMLElement;
+  const svgEstado = document.getElementById('svg-estado') as unknown as SVGSVGElement;
+  const svgMicro = document.getElementById('svg-micro') as unknown as SVGSVGElement;
+  const microBox = document.getElementById('micro') as HTMLElement;
+  const microAviso = document.getElementById('micro-aviso') as HTMLElement;
+  const focoBarra = document.getElementById('foco-barra') as HTMLElement;
+  const focoNome = document.getElementById('foco-nome') as HTMLElement;
+  const perfilBox = document.getElementById('perfil-box') as HTMLElement;
+  const perfilSel = document.getElementById('perfil-sel') as HTMLSelectElement;
+  const selAno = document.getElementById('sel-ano') as HTMLSelectElement;
+  const selCargo = document.getElementById('sel-cargo') as HTMLSelectElement;
+  const selModo = document.getElementById('sel-modo') as HTMLSelectElement;
+  const opPerfil = selModo.querySelector('option[value=perfil]') as HTMLOptionElement;
+  const destaque = document.getElementById('destaque') as unknown as SVGPathElement;
+  const busca = document.getElementById('busca') as HTMLInputElement;
+  const paths = Array.from(svgEstado.querySelectorAll<SVGPathElement>('path[data-i]'));
+  const porId = new Map(paths.map((p) => [p.dataset.i as string, p]));
+  const porNome = new Map<string, string>();
+
+  const estado: Record<string, string> = { cargo: 'federal', ano: '2026', modo: 'partido' };
+  let dados: Dados = { estado: {}, m: {} };
+  let fixado: string | null = null;
+  let exibido: string | null = null;
+  let foco: string | null = null;
+  let micro: Micro | null = null;
+  let contorno: any = null;
+  let vista: Vista | null = null;
+  let siteFixo: number | null = null;
+  let notas: Record<string, [number | null, string]> | null = null;
+
+  const esc = (s: unknown) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } as Record<string, string>)[c]);
+  const n0 = (x: number | null | undefined) => (x == null ? '—' : Math.round(x).toLocaleString('pt-BR'));
+  const d1 = (x: number) => x.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  const sem = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('pt-BR').trim();
+  const oc = (el: Element | null, v: boolean) => { if (el) { if (v) el.setAttribute('hidden', ''); else el.removeAttribute('hidden'); } };
+  const regMun = (i: string) => dados.m[i]?.d?.[estado.ano]?.[estado.cargo];
+  const vencedor = (r: Reg) => r.w ?? r.p[0]?.[0];
+  const jget = async (rel: string) => { const r = await fetch(base + rel); if (!r.ok) throw new Error(String(r.status)); return r.json(); };
+  const mn = (a: number[]) => a.reduce((m, v) => (v < m ? v : m), Infinity);
+  const mx = (a: number[]) => a.reduce((m, v) => (v > m ? v : m), -Infinity);
+
+  function lerControles() {
+    estado.ano = selAno.value; estado.cargo = selCargo.value; estado.modo = selModo.value;
+  }
+
+  // cargos sem dados na eleição escolhida ficam apagados na lista
+  function ajustarCargos() {
+    const ops = Array.from(selCargo.querySelectorAll<HTMLOptionElement>('option'));
+    const ok = (o: HTMLOptionElement) => (o.dataset.anos ?? '').split(',').includes(estado.ano) && !!dados.estado?.[estado.ano]?.[o.value];
+    for (const o of ops) {
+      const v = ok(o); o.disabled = !v;
+      if (v) delete o.dataset.nota; else o.dataset.nota = `sem dados em ${estado.ano}`;
+    }
+    if (!ops.some((o) => ok(o) && o.value === estado.cargo)) {
+      const alvo = ops.find((o) => ok(o) && o.value === (estado.ano === '2024' ? 'vereador' : 'federal')) ?? ops.find(ok);
+      if (alvo) { selCargo.value = alvo.value; estado.cargo = alvo.value; }
+    }
+  }
+
+  function escreverRegra(corpo: string) {
+    const el = document.getElementById('regra');
+    if (el) el.innerHTML = `<b>Regra desta tela.</b> ${corpo} <a href="${base}guia/">Ver todas as regras</a>`;
+  }
+  const REGRA: Record<string, string> = {
+    presidente: 'Cada município recebe a cor do partido do candidato mais votado nele.',
+    governador: 'Cada município recebe a cor do partido do candidato mais votado nele.',
+    senador: 'Cada município recebe a cor do partido que somou mais votos nele, contando todos os candidatos do partido.',
+    federal: 'Cada município recebe a cor do partido que somou mais votos nele, somando os votos nos candidatos e na legenda.',
+    estadual: 'Cada município recebe a cor do partido que somou mais votos nele, somando os votos nos candidatos e na legenda.',
+    prefeito: 'Cada município recebe a cor do partido do prefeito eleito em 2024. Onde houve segundo turno, vale o segundo.',
+    vereador: 'Cada município recebe a cor do partido com mais vereadores eleitos. No empate, vale o partido com mais votos.',
+  };
+  function regraEstado() {
+    const corpo = estado.modo === 'nota'
+      ? `Cada município recebe uma cor pela posição média, da esquerda à direita, dos partidos que receberam votos para ${NOMES[estado.cargo].toLowerCase()}, ponderada pelos votos. Conta todos os votos, não só os do vencedor.`
+      : REGRA[estado.cargo];
+    const turno = estado.cargo === 'presidente' || estado.cargo === 'governador'
+      ? (estado.ano === '2022' ? ' Em 2022, o mapa mostra o segundo turno.' : ' Em 2026, o mapa mostra o primeiro turno.') : '';
+    escreverRegra(corpo + turno);
+  }
+
+  function tituloLegenda(): string {
+    if (estado.cargo === 'prefeito') return 'Prefeituras por partido do prefeito eleito';
+    if (estado.cargo === 'vereador') return 'Municípios onde cada partido tem mais vereadores';
+    return 'Municípios vencidos por partido';
+  }
+  function chips(contagem: Map<string, number>, extra = ''): string {
+    const ord = [...contagem.entries()].sort((a, b) => b[1] - a[1]);
+    const resto = ord.slice(10).reduce((s, [, v]) => s + v, 0);
+    return `<ul class="chips">` + ord.slice(0, 10).map(([p, v]) => `<li><i style="background:${corPartido(p)}"></i>${esc(p)} <b>${v}</b></li>`).join('') +
+      (resto ? `<li><i style="background:#9AA5B5"></i>Outros <b>${resto}</b></li>` : '') + extra + `</ul>`;
+  }
+  const LEG_NOTA = `<div class="gradiente" style="background:${GRADIENTE}"></div><div class="gradiente-rot"><span>Esquerda</span><span>Direita</span></div>
+    <p class="leg-nota">Nota de 0 a 10 dada por especialistas em 2022 a cada partido, ponderada pelos votos. Mostra o rótulo da legenda, não a opinião de cada eleitor.</p>`;
+
+  function pintar() {
+    regraEstado();
+    const contagem = new Map<string, number>();
+    for (const p of paths) {
+      const r = regMun(p.dataset.i as string);
+      let cor = CINZA;
+      if (r) {
+        if (estado.modo === 'partido') {
+          const par = vencedor(r);
+          cor = corPartido(par);
+          if (par) contagem.set(par, (contagem.get(par) ?? 0) + 1);
+        } else cor = corNota(r.nota);
+      }
+      p.style.fill = cor;
+    }
+    legenda.innerHTML = estado.modo === 'partido'
+      ? `<p class="leg-titulo">${tituloLegenda()}</p>${chips(contagem)}`
+      : `<p class="leg-titulo">Posição dos partidos mais votados</p>${LEG_NOTA}`;
+  }
+
+  function blocoRegistro(r: Reg, ehEstado: boolean): string {
+    const cands = r.c.map(([nome, num, p, v, pc, el]) =>
+      `<li style="--cor:${corPartido(p)}"><span class="nome">${esc(titulo(nome))}${el ? '<span class="tag">eleito(a)</span>' : ''}</span><span class="pc">${d1(pc)}%</span><span class="meta">${esc(p)}, ${esc(num)}</span><span class="vt">${n0(v)} votos</span></li>`).join('');
+    const cadeiras = r.s
+      ? `<h3>Cadeiras ${ehEstado ? 'nas Câmaras do estado' : 'na Câmara'}${r.cad ? ` (${n0(r.cad)})` : ''}</h3><ul class="rank">` +
+        r.s.map(([p, n]) => `<li><i style="background:${corPartido(p)}"></i>${esc(p)}<span style="margin-left:auto">${n0(n)}</span></li>`).join('') + '</ul>' : '';
+    const parts = SEM_PARTIDOS.has(estado.cargo) ? '' :
+      `<h3>Partidos mais votados</h3><ul class="rank">` +
+      r.p.map(([p, v, pc]) => `<li><i style="background:${corPartido(p)}"></i>${esc(p)} <small>${n0(v)} votos</small><span>${d1(pc)}%</span></li>`).join('') + '</ul>';
+    const segs = r.e.map((x, k) => {
+      if (!(x > 0)) return '';
+      const nome = k < CAMPOS.length ? CAMPOS[k] : 'sem classificação';
+      const cor = k < CAMPOS.length ? corNota(NOTA_CAMPO[CAMPOS[k]]) : '#B8C0CC';
+      return `<span style="flex:${x} 1 0;background:${cor}" title="${esc(nome)}: ${d1(x)}%"></span>`;
+    }).join('');
+    const nota = r.nota != null ? `Nota média ${d1(r.nota)} de 10` : 'Sem classificação';
+    const avisos = 'Percentuais sobre os votos válidos do cargo.' +
+      (estado.cargo === 'senador' && estado.ano === '2026' ? ' Em 2026 cada eleitor votou em dois candidatos, então os percentuais são sobre o total de votos, não sobre os eleitores.' : '') +
+      (ehEstado && MUNICIPAIS.has(estado.cargo) ? ' No estado, soma dos votos de todas as eleições municipais.' : '');
+    return `<h3>${ehEstado && MUNICIPAIS.has(estado.cargo) ? 'Mais votados no estado' : 'Candidatos mais votados'}</h3><ul class="cands">${cands}</ul>
+      ${cadeiras}${parts}
+      <p class="pequena">${avisos}</p>
+      <h3>Divisão dos votos por campo</h3><div class="empilhada" aria-hidden="true">${segs}</div>
+      <p class="pequena">${nota}. É o rótulo das legendas segundo especialistas em 2022, não a opinião dos eleitores.</p>`;
+  }
+
+  function mostrar(i: string | null) {
+    exibido = i;
+    const alvo = i ?? foco ?? fixado;
+    if (!foco) destaque.setAttribute('d', alvo ? porId.get(alvo)?.getAttribute('d') ?? '' : '');
+    const m = alvo ? dados.m[alvo] : undefined;
+    const r = m ? regMun(alvo as string) : dados.estado?.[estado.ano]?.[estado.cargo];
+    const rotulo = `${NOMES[estado.cargo]}, ${estado.ano}${m && r?.t === '2' ? ', 2º turno' : ''}`;
+    const cab = m
+      ? `<h2>${esc(m.n)}</h2><p class="pequena" style="margin:0 0 .5rem">${rotulo}</p>
+         <dl class="mini"><div><dt>Habitantes</dt><dd>${n0(m.pop)}</dd></div><div><dt>Eleitores</dt><dd>${n0(m.el)}</dd></div><div><dt>Votos válidos</dt><dd>${n0(r?.v)}</dd></div></dl>`
+      : `<h2>Estado de São Paulo</h2><p class="pequena" style="margin:0 0 .5rem">${rotulo}</p>
+         <dl class="mini"><div><dt>Votos válidos</dt><dd>${n0(r?.v)}</dd></div></dl>`;
+    const corpo = r ? blocoRegistro(r, !m) : '<p>Sem dados para esta combinação de eleição e cargo.</p>';
+    const rodape = m
+      ? (alvo !== foco ? `<button type="button" class="abrir" data-zoom="${alvo}">Ver o mapa de ${esc(m.n)}</button>` : '') +
+        `<a class="abrir sec" href="${base}municipio/${alvo}/">Abrir a ficha de ${esc(m.n)}</a>` +
+        `<a class="abrir sec" href="${base}painel/?m=${alvo}">Perfil do eleitorado de ${esc(m.n)}</a>` +
+        `<a class="abrir sec" href="${base}territorio/?m=${alvo}&a=${estado.ano}&c=${estado.cargo}1">Escolas e bairros de ${esc(m.n)}</a>`
+      : `<p class="pequena">Passe o mouse sobre um município para ver os números dele.</p><a class="abrir" href="${base}painel/">Perfil do eleitorado do estado</a>`;
+    painel.innerHTML = cab + corpo + rodape;
+  }
+
+  // ---------- mapa do município ----------
+  const aneis = (g: any): number[][][] => (g.type === 'Polygon' ? g.coordinates : g.coordinates.flat());
+  const sv = (arr: number[] | undefined, s: Site) => (arr ? s.idx.reduce((t, j) => t + (arr[j] ?? 0), 0) : 0);
+
+  function chaveVoto(m: Micro, ano: string, cargo: string): string | null {
+    const b = m.votos?.[ano];
+    if (!b) return null;
+    return b[`${cargo}2`] ? `${cargo}2` : b[`${cargo}1`] ? `${cargo}1` : null;
+  }
+  function semVotosMsg(ano: string, cargo: string): string {
+    if (cargo === 'presidente' || cargo === 'governador' || cargo === 'senador') return 'O mapa por local de votação cobre deputados, vereador e prefeito. Para este cargo, o mapa mostra o perfil dos eleitores.';
+    if (ano === '2026') return 'Os votos de 2026 por seção ainda não foram carregados para este município. O mapa mostra o perfil dos eleitores.';
+    return 'Não há votos por seção deste cargo neste município. O mapa mostra o perfil dos eleitores.';
+  }
+  function perfilDe(s: Site, locs: LocalM[], k: string): number | null {
+    let a = 0, w = 0;
+    for (const j of s.idx) { const l = locs[j]; const v = (l as any)[k]; if (v != null && l.pt) { a += v * l.pt; w += l.pt; } }
+    return w ? a / w : null;
+  }
+
+  function renderMicro() {
+    if (!foco) return;
+    const ano = estado.ano, cargo = estado.cargo, metrica = perfilSel.value;
+    const locs: LocalM[] = micro?.locais?.[ano] ?? [];
+    const chave = micro ? chaveVoto(micro, ano, cargo) : null;
+    const bloco: VotoM | null = chave && micro ? micro.votos[ano][chave] : null;
+
+    const grupos = new Map<string, Site>();
+    let semCoord = 0;
+    locs.forEach((l, j) => {
+      if (l.la == null || l.lo == null) { semCoord++; return; }
+      const kk = `${l.la.toFixed(5)},${l.lo.toFixed(5)}`;
+      const s = grupos.get(kk);
+      if (s) s.idx.push(j); else grupos.set(kk, { idx: [j], x: l.lo * K, y: -l.la });
+    });
+    const sites = [...grupos.values()];
+    const valS = sites.map((s) => (bloco ? sv(bloco.val, s) : 0));
+    const partS = sites.map((s) => (bloco ? bloco.p.map((_, pi) => sv(bloco.pv[pi], s)) : []));
+
+    const modoEf = !bloco && estado.modo !== 'perfil' ? 'perfil' : estado.modo;
+    const perfilVal = sites.map((s) => perfilDe(s, locs, metrica));
+    const pv = perfilVal.filter((v): v is number => v != null);
+    const vmin = pv.length ? mn(pv) : 0, vmax = pv.length ? mx(pv) : 1;
+    const contagem = new Map<string, number>();
+    let ocultos = 0;
+    const cores = sites.map((_, i) => {
+      if (modoEf === 'perfil') { const v = perfilVal[i]; return v == null ? CINZA : mix(CLARO, ESCURO, vmax > vmin ? (v - vmin) / (vmax - vmin) : 0.5); }
+      if (!bloco) return CINZA;
+      if (valS[i] < MIN_VALIDOS) { ocultos++; return CINZA; }
+      const ps = partS[i];
+      if (modoEf === 'partido') {
+        let bi = -1, bv = 0;
+        ps.forEach((v, pi) => { if (v > bv) { bv = v; bi = pi; } });
+        if (bi < 0) return CINZA;
+        const sg = bloco.p[bi][0]; contagem.set(sg, (contagem.get(sg) ?? 0) + 1);
+        return corPartido(sg);
+      }
+      let a = 0, w = 0;
+      ps.forEach((v, pi) => { const n = notas?.[normSigla(bloco.p[pi][0])]?.[0]; if (n != null) { a += n * v; w += v; } });
+      return w ? corNota(a / w) : CINZA;
+    });
+
+    const xs: number[] = [], ys: number[] = [];
+    const caminho = contorno ? aneis(contorno).map((r) => r.map((p, kk) => {
+      const x = p[0] * K, y = -p[1]; xs.push(x); ys.push(y);
+      return `${kk ? 'L' : 'M'}${x.toFixed(5)} ${y.toFixed(5)}`;
+    }).join('') + 'Z').join('') : '';
+    sites.forEach((s) => { xs.push(s.x); ys.push(s.y); });
+    const av: string[] = [];
+    if (!xs.length) {
+      svgMicro.innerHTML = '';
+      microAviso.textContent = !micro ? 'Ainda não há dados por local de votação para este município.' : 'Não há geometria nem coordenadas para desenhar este município.';
+      vista = null; legenda.innerHTML = ''; escreverRegra('Sem dados para desenhar o mapa deste município.'); mostrar(null); return;
+    }
+    const x0 = mn(xs), x1 = mx(xs), y0 = mn(ys), y1 = mx(ys);
+    const w = Math.max(x1 - x0, 1e-4), h = Math.max(y1 - y0, 1e-4), pad = Math.max(w, h) * 0.03, sw = Math.max(w, h) / 700;
+    let cellD: string[] = [];
+    let celulas = '';
+    if (sites.length) {
+      const del = Delaunay.from(sites, (s) => s.x, (s) => s.y);
+      const vor = del.voronoi([x0 - pad, y0 - pad, x1 + pad, y1 + pad]);
+      cellD = sites.map((_, i) => vor.renderCell(i) ?? '');
+      celulas = cellD.map((d, i) => (d ? `<path data-s="${i}" d="${d}" fill="${cores[i]}" stroke="#fff" stroke-width="${(sw * 0.5).toFixed(6)}"></path>` : '')).join('');
+    }
+    const pontos = sites.map((s) => `<circle cx="${s.x.toFixed(5)}" cy="${s.y.toFixed(5)}" r="${(sw * 1.5).toFixed(6)}" fill="#fff" stroke="#1E2A44" stroke-width="${(sw * 0.5).toFixed(6)}" pointer-events="none"></circle>`).join('');
+    svgMicro.setAttribute('viewBox', `${x0 - pad} ${y0 - pad} ${w + 2 * pad} ${h + 2 * pad}`);
+    svgMicro.setAttribute('aria-label', `Mapa de ${dados.m[foco]?.n ?? ''} por local de votação, ${NOMES[cargo]} ${ano}`);
+    svgMicro.innerHTML = `<defs><clipPath id="cpm"><path d="${caminho}" clip-rule="evenodd"></path></clipPath></defs>` +
+      (caminho ? `<path d="${caminho}" fill="#EDF0F2" fill-rule="evenodd"></path>` : '') +
+      `<g clip-path="${caminho ? 'url(#cpm)' : 'none'}">${celulas}</g>` +
+      (caminho ? `<path d="${caminho}" fill="none" stroke="#1E2A44" stroke-width="${(sw * 1.4).toFixed(6)}" stroke-linejoin="round" pointer-events="none"></path>` : '') +
+      pontos + `<path id="destaque-micro" d="" fill="none" stroke="#1E2A44" stroke-width="${(sw * 2.6).toFixed(6)}" pointer-events="none" ${caminho ? 'clip-path="url(#cpm)"' : ''}></path>`;
+    vista = { locs, sites, bloco, chave, valS, partS, cellD };
+    siteFixo = null;
+
+    const base0 = 'Cada área é a região mais próxima de um local de votação (escola ou prédio)';
+    escreverRegra(modoEf === 'perfil'
+      ? `${base0} e recebe uma cor pela parcela de ${PERFIL_ROT[metrica].toLowerCase()} entre os eleitores do local. A cor mostra quem vota ali, não como votou.`
+      : modoEf === 'nota'
+        ? `${base0} e recebe uma cor pela posição média, da esquerda à direita, dos partidos votados ali, ponderada pelos votos.`
+        : `${base0} e recebe a cor do partido com mais votos nele, somando votos nos candidatos e na legenda.`);
+    const cinza = ocultos ? `<li><i style="background:${CINZA};border:1px solid #9AA5B5"></i>Poucos votos, ocultos <b>${ocultos}</b></li>` : '';
+    legenda.innerHTML = modoEf === 'perfil'
+      ? `<p class="leg-titulo">${PERFIL_ROT[metrica]}, % dos eleitores do local</p><div class="gradiente" style="background:linear-gradient(90deg,${mix(CLARO, ESCURO, 0)},${mix(CLARO, ESCURO, 1)})"></div>
+         <div class="gradiente-rot"><span>${pv.length ? d1(vmin) + '%' : ''}</span><span>${pv.length ? d1(vmax) + '%' : ''}</span></div><p class="leg-nota">A cor mostra o perfil de quem vota no local, não o voto.</p>`
+      : modoEf === 'nota' ? `<p class="leg-titulo">Posição dos partidos votados no local</p>${LEG_NOTA}${cinza ? `<ul class="chips">${cinza}</ul>` : ''}`
+      : `<p class="leg-titulo">Locais de votação vencidos por partido</p>${chips(contagem, cinza)}`;
+    if (!micro) av.push('Ainda não há dados por local de votação para este município. Gere-os com o script 18 do pipeline.');
+    else if (!locs.length) av.push(`Sem locais de votação cadastrados para ${ano}.`);
+    else {
+      if (!bloco) av.push(semVotosMsg(ano, cargo));
+      if (semCoord) av.push(`${semCoord} local(is) sem coordenada no cadastro do TSE não aparece(m) no mapa, mas entram nos totais.`);
+      av.push('As áreas são aproximações: cada uma é a região mais próxima de um local de votação, e não os limites reais das seções ou dos bairros.');
+    }
+    microAviso.textContent = av.join(' ');
+    mostrar(null);
+  }
+
+  function mostrarSite(si: number) {
+    if (!vista) return;
+    const { locs, sites, bloco, valS, partS, cellD, chave } = vista;
+    const s = sites[si], ls = s.idx.map((j) => locs[j]);
+    svgMicro.querySelector('#destaque-micro')?.setAttribute('d', cellD[si] ?? '');
+    const el = ls.reduce((t, l) => t + (l.el ?? 0), 0), sec = ls.reduce((t, l) => t + l.s, 0);
+    const nome = ls.length === 1 ? titulo(ls[0].n) : `${titulo(ls[0].n)} e mais ${ls.length - 1}`;
+    const bairros = [...new Set(ls.map((l) => l.b).filter(Boolean))].join(', ') || 'Bairro não informado';
+    const prf = (k: string) => { const v = perfilDe(s, locs, k); return v == null ? '—' : `${d1(v)}%`; };
+    const val = valS[si];
+    let votos = '';
+    if (!bloco) votos = `<p class="pequena">${esc(semVotosMsg(estado.ano, estado.cargo))}</p>`;
+    else if (val < MIN_VALIDOS) votos = '<p class="pequena">Poucos votos neste local: os números ficam ocultos para proteger o sigilo do voto.</p>';
+    else {
+      const cs = bloco.c.map((c, ci) => [c[1], c[2], sv(bloco.v[ci], s)] as [string, string | null, number]).sort((a, b) => b[2] - a[2]).slice(0, 5);
+      const ps = bloco.p.map(([sg], pi) => [sg, partS[si][pi]] as [string, number]).sort((a, b) => b[1] - a[1]).slice(0, 5);
+      votos = (SEM_PARTIDOS.has(estado.cargo) ? '' : `<h3>Partidos mais votados no local</h3><ul class="rank">` +
+          ps.map(([sg, v]) => `<li><i style="background:${corPartido(sg)}"></i>${esc(sg)} <small>${n0(v)} votos</small><span>${d1((100 * v) / val)}%</span></li>`).join('') + '</ul>') +
+        `<h3>Candidatos mais votados no local</h3><ul class="cands">` +
+        cs.map(([nm, p, v]) => `<li style="--cor:${corPartido(p)}"><span class="nome">${esc(titulo(nm))}</span><span class="pc">${d1((100 * v) / val)}%</span><span class="meta">${esc(p ?? '')}</span><span class="vt">${n0(v)} votos</span></li>`).join('') + '</ul>' +
+        '<p class="pequena">Percentuais sobre os votos válidos do local.</p>';
+    }
+    const m = foco ? dados.m[foco] : null;
+    painel.innerHTML = `<h2>${esc(nome)}</h2><p class="pequena" style="margin:0 0 .5rem">${esc(bairros)}${m ? `, ${esc(m.n)}` : ''}. ${NOMES[estado.cargo]}, ${estado.ano}.</p>
+      <dl class="mini"><div><dt>Eleitores</dt><dd>${n0(el)}</dd></div><div><dt>Seções</dt><dd>${n0(sec)}</dd></div>${bloco ? `<div><dt>Votos válidos</dt><dd>${n0(val)}</dd></div>` : ''}</dl>
+      ${votos}
+      <h3>Perfil de quem vota aqui</h3>
+      <ul class="rank"><li>Mulheres<span>${prf('f')}</span></li><li>16 a 24 anos<span>${prf('j')}</span></li><li>60 anos ou mais<span>${prf('i')}</span></li><li>Ensino superior completo<span>${prf('u')}</span></li></ul>
+      ${foco ? `<a class="abrir sec" href="${base}territorio/?m=${foco}&a=${estado.ano}${chave ? '&c=' + chave : ''}">Tabela dos locais e candidato por local</a>` : ''}`;
+  }
+
+  async function entrarMunicipio(i: string) {
+    if (!dados.m[i]) return;
+    foco = i; fixado = null; siteFixo = null; micro = null; contorno = null; vista = null;
+    focoNome.textContent = dados.m[i].n;
+    oc(focoBarra, false); oc(svgEstado, true); oc(microBox, false); oc(perfilBox, false);
+    opPerfil.hidden = false;
+    svgMicro.innerHTML = ''; microAviso.textContent = 'Carregando o mapa do município…';
+    const [g, mc] = await Promise.allSettled([jget(`data/geo/mun/${i}.json`), jget(`data/micro/${i}.json`)]);
+    if (!notas) { try { notas = await jget('data/partidos.json'); } catch { notas = {}; } }
+    if (foco !== i) return;
+    contorno = g.status === 'fulfilled' ? g.value : null;
+    micro = mc.status === 'fulfilled' ? mc.value : null;
+    renderMicro(); sincronizarUrl();
+    focoNome.scrollIntoView({ block: 'nearest' });
+  }
+
+  function sairMunicipio() {
+    foco = null; micro = null; contorno = null; vista = null; siteFixo = null; fixado = null;
+    oc(focoBarra, true); oc(microBox, true); oc(svgEstado, false); oc(perfilBox, true);
+    opPerfil.hidden = true;
+    if (selModo.value === 'perfil') selModo.value = 'partido';
+    lerControles(); pintar(); mostrar(null); sincronizarUrl();
+  }
+
+  function sincronizarUrl() {
+    const p = new URLSearchParams();
+    if (foco) p.set('m', foco);
+    p.set('a', estado.ano); p.set('c', estado.cargo);
+    if (estado.modo !== 'partido') p.set('x', estado.modo);
+    history.replaceState(null, '', `?${p.toString()}`);
+  }
+
+  // ---------- eventos ----------
+  const toque = !matchMedia('(hover: hover)').matches;
+  for (const p of paths) {
+    const i = p.dataset.i as string;
+    p.addEventListener('mouseenter', () => mostrar(i));
+    p.addEventListener('mouseleave', () => mostrar(null));
+    p.addEventListener('click', () => { if (toque) { fixado = i; mostrar(i); } else entrarMunicipio(i); });
+  }
+  svgMicro.addEventListener('mouseover', (e) => {
+    const p = (e.target as Element).closest('path[data-s]') as SVGPathElement | null;
+    if (p && siteFixo == null) mostrarSite(Number(p.getAttribute('data-s')));
+  });
+  svgMicro.addEventListener('mouseleave', () => {
+    svgMicro.querySelector('#destaque-micro')?.setAttribute('d', '');
+    if (siteFixo != null) mostrarSite(siteFixo); else mostrar(null);
+  });
+  svgMicro.addEventListener('click', (e) => {
+    const p = (e.target as Element).closest('path[data-s]') as SVGPathElement | null;
+    if (!p) return;
+    siteFixo = Number(p.getAttribute('data-s')); mostrarSite(siteFixo);
+  });
+  painel.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest('button[data-zoom]') as HTMLButtonElement | null;
+    if (b?.dataset.zoom) entrarMunicipio(b.dataset.zoom);
+  });
+  document.getElementById('voltar')?.addEventListener('click', sairMunicipio);
+  busca.addEventListener('change', () => {
+    const i = porNome.get(sem(busca.value));
+    if (i) { entrarMunicipio(i); painel.focus(); }
+  });
+  perfilSel.addEventListener('change', () => { if (foco) renderMicro(); });
+
+  async function iniciar() {
+    legenda.textContent = 'Carregando dados…';
+    try {
+      dados = await (await fetch(`${base}data/mapa.json`)).json();
+    } catch {
+      legenda.textContent = 'Não foi possível carregar os dados do mapa. Recarregue a página.';
+      return;
+    }
+    for (const [i, m] of Object.entries(dados.m)) porNome.set(sem(m.n), i);
+    [selAno, selCargo, selModo].forEach((el) =>
+      el.addEventListener('change', () => {
+        lerControles();
+        if (el === selAno) { ajustarCargos(); lerControles(); }
+        if (foco) renderMicro(); else { pintar(); mostrar(exibido); }
+        sincronizarUrl();
+      }));
+    const q = new URLSearchParams(location.search);
+    const aplicar = (sel: HTMLSelectElement, v: string | null) => { if (v && Array.from(sel.options).some((o) => o.value === v)) sel.value = v; };
+    aplicar(selAno, q.get('a')); aplicar(selCargo, q.get('c')); aplicar(selModo, q.get('x'));
+    lerControles(); ajustarCargos(); lerControles();
+    const m = q.get('m');
+    if (!(m && dados.m[m]) && estado.modo === 'perfil') { selModo.value = 'partido'; estado.modo = 'partido'; }
+    pintar(); mostrar(null);
+    if (m && dados.m[m]) await entrarMunicipio(m);
+  }
+  iniciar();
+</script>

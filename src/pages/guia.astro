@@ -1,0 +1,99 @@
+---
+import Base from '../layouts/Base.astro';
+import { href } from '../lib/url';
+import { corPartido, GRADIENTE } from '../lib/cores';
+---
+<Base titulo="Como ler o mapa | ApuraSP" atual="guia" descricao="As regras do mapa do ApuraSP: o que pinta cada município, de onde vêm os percentuais e o que cada marca significa.">
+  <main class="guia">
+    <h1>Como ler o mapa</h1>
+    <p class="leitura" style="margin-top:.6rem">O mapa mostra quem venceu em cada um dos 645 municípios paulistas. Esta página explica a regra de cada cor e de cada número, para que dê para conferir qualquer resultado.</p>
+
+    <h2>Em poucos passos</h2>
+    <ol class="leitura">
+      <li>Escolha a <b>eleição</b> (2026, 2024 ou 2022) e o <b>cargo</b>. Só aparecem os cargos que existem naquela eleição.</li>
+      <li>Escolha o que pintar: o <b>partido</b> vencedor ou a posição no <b>espectro</b>.</li>
+      <li>Passe o mouse sobre um município, ou toque nele, para ver os números no painel ao lado.</li>
+      <li>Clique para abrir a <a href={href('')}>ficha do município</a>, ou use a busca por nome. No <a href={href('painel/')}>painel do eleitorado</a> você vê idade, gênero e escolaridade de quem vota.</li>
+    </ol>
+
+    <h2>O que pinta cada município</h2>
+    <p class="leitura">Os percentuais usam como base os <b>votos válidos</b> do cargo no município: votos em candidatos e na legenda, sem brancos e nulos. Os números de votos são sempre os do candidato ou do partido naquele município.</p>
+    <div class="rolagem">
+      <table class="tabela">
+        <thead><tr><th>Cargo</th><th>O que pinta o município</th><th>Eleição e turno</th><th>“Eleito(a)” vale para</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Presidente</th><td>Partido do candidato mais votado no município</td><td>2022: segundo turno. 2026: primeiro turno</td><td>O país</td></tr>
+          <tr><th scope="row">Governador</th><td>Partido do candidato mais votado no município</td><td>2022: segundo turno. 2026: primeiro turno</td><td>O estado</td></tr>
+          <tr><th scope="row">Senador</th><td>Partido que somou mais votos no município, contando todos os candidatos dele</td><td>Turno único. Em 2022 havia 1 vaga; em 2026 são 2 vagas e 2 votos por eleitor</td><td>O estado</td></tr>
+          <tr><th scope="row">Deputado federal e estadual</th><td>Partido que somou mais votos no município, entre votos nos candidatos e na legenda</td><td>Primeiro turno</td><td>O estado</td></tr>
+          <tr><th scope="row">Prefeito</th><td>Partido do prefeito eleito</td><td>2024, no turno que decidiu (segundo turno onde houve)</td><td>O município</td></tr>
+          <tr><th scope="row">Vereador</th><td>Partido com mais vereadores eleitos. No empate, vale o partido com mais votos</td><td>2024</td><td>O município</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="fonte">Em 2026 só há resultados do primeiro turno. O segundo turno entra depois que o TSE publicar os arquivos.</p>
+
+    <h3>Regras que valem para todos os cargos</h3>
+    <ul class="leitura">
+      <li><b>Coligações e federações não são somadas.</b> O mapa usa o partido do candidato. PT, PCdoB e PV, por exemplo, contam cada um com os próprios votos, embora disputem as cadeiras de deputado juntos, numa federação.</li>
+      <li><b>“Eleito(a)”</b> ao lado de um nome indica o resultado oficial do cargo. Para deputado e senador, vale para o estado: quem aparece como eleito pode ter sido pouco votado naquela cidade.</li>
+      <li><b>Sem município escolhido</b>, o painel mostra o total do estado. Em prefeito e vereador, é a soma de todas as eleições municipais.</li>
+    </ul>
+
+    <h2>O modo Espectro</h2>
+    <p class="leitura">No modo Espectro, a cor não depende de quem venceu. Cada partido tem uma nota de 0 (extrema-esquerda) a 10 (extrema-direita), dada por especialistas em 2022. O município recebe a <b>nota média de todos os votos do cargo</b>, ponderada pela votação de cada partido, e a cor vai do vermelho (esquerda) ao azul (direita).</p>
+    <div class="aviso"><p>A nota é do partido, não do eleitor. Se um candidato troca de partido, os votos dele mudam de cor sem que ninguém tenha mudado de opinião. Partidos sem classificação, como o Missão, ficam fora da média e aparecem à parte na barra de divisão dos votos. Veja os detalhes na <a href={href('metodologia/')}>metodologia</a>.</p></div>
+
+    <h2>As cores</h2>
+    <ul class="cores-amostra" aria-label="Exemplos de cores do mapa">
+      <li><i style="background:#D9DEE5"></i>Cinza claro: sem dados para essa combinação</li>
+      <li><i style="background:#9AA5B5"></i>Cinza azulado: partido sem cor própria, contado em “Outros”</li>
+      <li><i style={`background:${corPartido('PL')}`}></i>PL</li>
+      <li><i style={`background:${corPartido('PT')}`}></i>PT</li>
+      <li><i style={`background:${corPartido('MDB')}`}></i>MDB</li>
+      <li><span class="grad" style={`background:${GRADIENTE}`}></span>Espectro, da esquerda à direita</li>
+    </ul>
+    <p class="leitura">As cores dos partidos são uma paleta própria do ApuraSP, escolhida para distinguir os partidos entre si. Não são as cores oficiais das legendas.</p>
+
+    <h2>O mapa de cada município</h2>
+    <p class="leitura">Ao escolher um município, o mapa passa a mostrar só ele, dividido por <b>local de votação</b>: a escola ou o prédio onde ficam as urnas, que reúne várias seções. O TSE informa a localização do local, não a de cada seção, e por isso o local é o menor recorte possível no mapa. Os votos são somados por local.</p>
+    <ul class="leitura">
+      <li><b>As áreas são aproximadas.</b> Cada área colorida é a região mais próxima de um local de votação, recortada pelo contorno oficial do município. Não são os limites reais das seções nem dos bairros.</li>
+      <li><b>A cor</b> segue a escolha em “Pintar por”: o partido com mais votos no local, a posição média no espectro ou uma característica dos eleitores (perfil).</li>
+      <li><b>Sigilo do voto:</b> locais com menos de 100 votos válidos ficam em cinza, sem números.</li>
+      <li><b>Cobertura:</b> vereador e prefeito de 2024 e deputados federal e estadual de 2022 e 2026. Para governador, senador e presidente o mapa por local de votação não está disponível: nesses cargos ele mostra o perfil dos eleitores.</li>
+      <li>A tabela completa dos locais e o recorte por candidato estão na página <a href={href('territorio/')}>Território</a>.</li>
+    </ul>
+
+    <h2>O painel ao lado do mapa</h2>
+    <ul class="leitura">
+      <li><b>Candidatos mais votados:</b> os cinco primeiros, com percentual, partido, número de urna e votos.</li>
+      <li><b>Partidos mais votados:</b> os cinco primeiros, com votos e percentual. Não aparece em presidente, governador e prefeito, onde cada partido tem um candidato só.</li>
+      <li><b>Cadeiras:</b> só em vereador, com os cinco partidos que mais elegeram.</li>
+      <li><b>Divisão dos votos por campo:</b> a barra mostra a parcela dos votos que foi para partidos de cada campo político, segundo a classificação de 2022.</li>
+    </ul>
+
+    <h2>Exemplo real: Barueri em 2024</h2>
+    <p class="leitura">Para <b>prefeito</b>, Barueri fica na cor do <b>Republicanos</b>: Beto Piteri venceu o segundo turno com 105.193 votos, contra 81.046 de Gil Arantes, do União. Para <b>vereador</b>, o município fica na cor do partido com mais cadeiras. Republicanos e União elegeram 3 vereadores cada, em 21 cadeiras. Nesse empate, vale a cor do partido que somou mais votos. Por isso o mesmo município pode aparecer em cores diferentes em prefeito e em vereador.</p>
+
+    <h2>O que o mapa não mostra</h2>
+    <ul class="leitura">
+      <li>Ele mostra o vencedor, não a margem. Um município vencido por 1 voto e outro vencido por 50 pontos ficam com a mesma cor. Abra o painel para ver os percentuais.</li>
+      <li>Municípios pequenos têm poucos votos, e a vitória de um partido pode depender de poucas centenas de eleitores.</li>
+      <li>Comparar 2022 com 2026 num município mostra a mudança de partido do candidato mais votado tanto quanto a mudança de preferência dos eleitores. Candidatos que trocam de partido movem a cor sozinhos.</li>
+      <li>Votos brancos, nulos e anulados não entram nos percentuais.</li>
+    </ul>
+
+    <h2>Perguntas frequentes</h2>
+    <details><summary>Por que um município aparece em cinza?</summary>
+      <p class="leitura">Cinza claro quer dizer que não há dados para a combinação escolhida de eleição e cargo. Cinza azulado quer dizer que o partido vencedor não tem cor própria na paleta e entra em “Outros” na legenda. Passe o mouse para ver qual é.</p></details>
+    <details><summary>O partido venceu a cidade, mas o candidato mais votado é de outro. Como?</summary>
+      <p class="leitura">Em deputado, o mapa soma todos os votos do partido, em vários candidatos e na legenda. Um partido pode ter muitos candidatos com votação média e vencer a soma, enquanto o candidato individual mais votado é de um partido menor.</p></details>
+    <details><summary>A cor de direita ou esquerda diz como o eleitor pensa?</summary>
+      <p class="leitura">Não. A classificação rotula os partidos e foi feita em 2022. Ela serve para comparar o perfil das legendas em que os votos foram dados, não a opinião de cada eleitor.</p></details>
+    <details><summary>Até que data vão os números de 2026?</summary>
+      <p class="leitura">O arquivo usado registra a última totalização em 04/10/2026, às 22h47. Se o TSE publicar novos arquivos, como os do segundo turno, os dados são atualizados e este texto também.</p></details>
+    <details><summary>De onde vêm os dados?</summary>
+      <p class="leitura">Dos dados abertos do Tribunal Superior Eleitoral e do IBGE. Veja a lista completa e os limites na <a href={href('metodologia/')}>metodologia</a>.</p></details>
+  </main>
+</Base>

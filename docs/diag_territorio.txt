@@ -1,0 +1,32 @@
+Parquets de votação por seção: ['votacao_secao_2024_SP.parquet']
+
+=== Locais de votação: coordenadas (Osasco e Barueri) ===
+['ano', 'NM_MUNICIPIO', 'locais', 'secoes', 'com_coord']
+(2022, 'BARUERI', 60, 750, 1406)
+(2024, 'BARUERI', 64, 799, 1504)
+(2026, 'BARUERI', 68, 815, 1630)
+(2022, 'OSASCO', 132, 1625, 3196)
+(2024, 'OSASCO', 131, 1640, 1640)
+(2026, 'OSASCO', 131, 1642, 3284)
+
+=== Amostra de locais (Barueri 2026) ===
+['NM_LOCAL_VOTACAO', 'NM_BAIRRO', 'NR_LATITUDE', 'NR_LONGITUDE', 'QT_ELEITOR_SECAO']
+('FIEB - ITB PROFESSOR MUNIR JOSÉ', 'JARDIM PAULISTA', '-23,5347446', '-46,8798515', '343')
+('EMEF SUZETE DA COSTA E SILVA MARIANO', 'JARDIM MARIA HELENA', '-23,5296663', '-46,8680823', '374')
+('EMEF PROFª DALVA FOGAÇA(ANTIGO ALAYDE)', 'JARDIM SILVEIRA', '-23,5287753', '-46,8876475', '388')
+('EMEIEF. JOSÉ EMÍDIO DE AGUIAR', 'JARDIM MARIA TEREZA', '-23,4995163', '-46,8728576', '380')
+('EMEF. RITA DE JESUS', 'PARQUE IMPERIAL', '-23,486618', '-46,8053147', '354')
+
+=== Eleitores por local de votação, Barueri 2024 (tamanho da unidade) ===
+['locais', 'min(e)', 'median(e)', 'max(e)', 'median(secoes)', 'max(secoes)']
+(64, 1164, 8658.0, 19366, 24.0, 50)
+
+=== Cobertura da chave zona+seção entre as três bases (Barueri 2024) ===
+['votos', 'locais', 'perfil', 'votos_x_locais', 'votos_x_perfil']
+(798, 799, 799, 798, 798)
+
+=== Vereador mais votado de Barueri em 2024: onde ele foi forte (por local de votação) ===
+ERRO: Parser Error: syntax error at or near "local"
+
+LINE 5: ..., NR_ZONA zona, NR_LOCAL_VOTACAO, any_value(NM_LOCAL_VOTACAO) local,
+                                                                         ^

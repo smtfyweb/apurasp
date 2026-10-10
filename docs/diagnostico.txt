@@ -1,0 +1,59 @@
+view v_cand           ok
+view v_vagas          ok
+view v_perfil_mun     ok
+view v_perfil_secao   ok
+view v_locais         ok
+view v_votos_secao    ok
+view v_votos_cand     ok
+view v_votos_partido  ok
+view v_detalhe        ok
+
+=== Colunas de municipio_tse_ibge ===
+['column_name', 'column_type', 'null', 'key', 'default', 'extra']
+('DT_GERACAO', 'VARCHAR', 'YES', None, None, None)
+('HH_GERACAO', 'VARCHAR', 'YES', None, None, None)
+('CD_UF_TSE', 'VARCHAR', 'YES', None, None, None)
+('CD_UF_IBGE', 'VARCHAR', 'YES', None, None, None)
+('SG_UF', 'VARCHAR', 'YES', None, None, None)
+('NM_UF', 'VARCHAR', 'YES', None, None, None)
+('CD_MUNICIPIO_TSE', 'VARCHAR', 'YES', None, None, None)
+('NM_MUNICIPIO_TSE', 'VARCHAR', 'YES', None, None, None)
+('CD_MUNICIPIO_IBGE', 'VARCHAR', 'YES', None, None, None)
+('NM_MUNICIPIO_IBGE', 'VARCHAR', 'YES', None, None, None)
+
+=== Vereança 2024: Osasco x Barueri ===
+['m', 'candidatos', 'eleitos', 'maior_votacao', 'menor_eleito', 'votos_nominais']
+('BARUERI', 387, 21, 6402, 2055, 197518)
+('OSASCO', 401, 21, 6391, 3137, 347309)
+
+=== Eleitorado Osasco x Barueri por ano ===
+['ano', 'NM_MUNICIPIO', 'eleitores', 'pct_feminino']
+(2022, 'BARUERI', 279389, 54.9)
+(2024, 'BARUERI', 297616, 54.8)
+(2026, 'BARUERI', 297546, 55.1)
+(2022, 'OSASCO', 588106, 53.3)
+(2024, 'OSASCO', 592559, 53.2)
+(2026, 'OSASCO', 583505, 53.6)
+
+=== Situação dos candidatos 2026 (SP) ===
+['DS_CARGO', 'DS_SIT_TOT_TURNO', 'n']
+('1º SUPLENTE', 'NÃO ELEITO', 13)
+('1º SUPLENTE', '#NULO', 3)
+('1º SUPLENTE', 'ELEITO', 2)
+('2º SUPLENTE', 'NÃO ELEITO', 13)
+('2º SUPLENTE', 'ELEITO', 2)
+('2º SUPLENTE', '#NULO', 1)
+('DEPUTADO ESTADUAL', 'SUPLENTE', 955)
+('DEPUTADO ESTADUAL', 'NÃO ELEITO', 301)
+('DEPUTADO ESTADUAL', 'ELEITO POR QP', 86)
+('DEPUTADO ESTADUAL', '#NULO', 81)
+('DEPUTADO ESTADUAL', 'ELEITO POR MÉDIA', 8)
+('DEPUTADO FEDERAL', 'SUPLENTE', 710)
+('DEPUTADO FEDERAL', 'NÃO ELEITO', 287)
+('DEPUTADO FEDERAL', '#NULO', 65)
+('DEPUTADO FEDERAL', 'ELEITO POR QP', 60)
+
+=== Votação por seção: anos e cargos disponíveis ===
+['ano', 'DS_CARGO', 'linhas']
+(2024, 'Prefeito', 872990)
+(2024, 'Vereador', 8738268)

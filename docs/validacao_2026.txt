@@ -1,0 +1,38 @@
+
+=== Última totalização no arquivo ===
+['max(DT_ULTIMA_TOTALIZACAO)', 'max(HH_ULTIMA_TOTALIZACAO)']
+('04/10/2026', '22:47:01')
+
+=== Federal SP: mais votados (Holanda: Pavanato 785.870) ===
+['NM_URNA_CANDIDATO', 'SG_PARTIDO', 'votos']
+('LUCAS PAVANATO', 'PL', 3038438)
+('ERIKA HILTON', 'PSOL', 1596472)
+('SÂMIA BOMFIM', 'PSOL', 583107)
+('KIM KATAGUIRI', 'MISSÃO', 520071)
+('TABATA AMARAL', 'PSB', 476383)
+
+=== Estadual SP: votos válidos (TSE: 23.290.014) ===
+['sum(CAST(QT_TOTAL_VOTOS_VALIDOS AS BIGINT))']
+(23290014,)
+
+=== Eleitos 2026 por situação (esperado: federal 70, estadual 94) ===
+['DS_CARGO', 'DS_SIT_TOT_TURNO', 'count_star()']
+('DEPUTADO ESTADUAL', 'ELEITO POR MÉDIA', 8)
+('DEPUTADO ESTADUAL', 'ELEITO POR QP', 86)
+('DEPUTADO FEDERAL', 'ELEITO POR MÉDIA', 10)
+('DEPUTADO FEDERAL', 'ELEITO POR QP', 60)
+
+=== Osasco e Barueri 2026: top 3 federal e estadual por município ===
+['NM_MUNICIPIO', 'DS_CARGO', 'NM_URNA_CANDIDATO', 'SG_PARTIDO', 'votos', 'rk']
+('BARUERI', 'Deputado Estadual', 'BRUNA FURLAN', 'REPUBLICANOS', 78122, 1)
+('BARUERI', 'Deputado Estadual', 'EDUARDA CAMPOPIANO', 'PL', 16930, 2)
+('BARUERI', 'Deputado Estadual', 'EDUARDO SUPLICY', 'PT', 5838, 3)
+('BARUERI', 'Deputado Federal', 'IGOR SOARES', 'PSD', 32482, 1)
+('BARUERI', 'Deputado Federal', 'LUCAS PAVANATO', 'PL', 24954, 2)
+('BARUERI', 'Deputado Federal', 'ERIKA HILTON', 'PSOL', 15979, 3)
+('OSASCO', 'Deputado Estadual', 'ROGERIO LINS', 'PODE', 153833, 1)
+('OSASCO', 'Deputado Estadual', 'EDUARDA CAMPOPIANO', 'PL', 25101, 2)
+('OSASCO', 'Deputado Estadual', 'EMÍDIO', 'PT', 24942, 3)
+('OSASCO', 'Deputado Federal', 'LUCAS PAVANATO', 'PL', 47266, 1)
+('OSASCO', 'Deputado Federal', 'ERIKA HILTON', 'PSOL', 33667, 2)
+('OSASCO', 'Deputado Federal', 'JOAO PAULO CUNHA', 'PT', 20888, 3)

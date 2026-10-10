@@ -1,0 +1,13 @@
+.venv/
+pipeline/raw/
+*.zip
+node_modules/
+
+dist/
+.astro/
+data/parquet/
+data/*.duckdb
+
+# dados gerados por local de votação: crescem rápido, decidimos onde publicar na etapa do GitHub Pages
+public/data/territorio/
+public/data/micro/

@@ -1,0 +1,34 @@
+---
+import '@fontsource-variable/schibsted-grotesk';
+import '@fontsource-variable/source-serif-4';
+import '../styles/global.css';
+import { href } from '../lib/url';
+interface Props { titulo: string; descricao?: string; atual?: string }
+const { titulo, descricao = 'Dados públicos do TSE e do IBGE sobre as eleições em São Paulo.', atual = '' } = Astro.props;
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{titulo}</title>
+    <meta name="description" content={descricao} />
+    <link rel="icon" href={href('favicon.svg')} type="image/svg+xml" />
+  </head>
+  <body>
+    <header class="topo">
+      <a class="marca" href={href('')}>ApuraSP</a>
+      <nav aria-label="Principal">
+        <a href={href('')} aria-current={atual === 'mapa' ? 'page' : undefined}>Mapa</a>
+        <a href={href('painel/')} aria-current={atual === 'painel' ? 'page' : undefined}>Painel do eleitorado</a>
+        <a href={href('territorio/')} aria-current={atual === 'territorio' ? 'page' : undefined}>Território</a>
+        <a href={href('guia/')} aria-current={atual === 'guia' ? 'page' : undefined}>Como ler o mapa</a>
+        <a href={href('metodologia/')} aria-current={atual === 'metodologia' ? 'page' : undefined}>Metodologia</a>
+      </nav>
+    </header>
+    <slot />
+    <footer class="rodape">
+      <p>Dados públicos do Tribunal Superior Eleitoral e do IBGE, tratados de forma independente. O projeto não tem vínculo com esses órgãos. <a href={href('metodologia/')}>Veja como os dados foram tratados</a>. <a href={href('creditos/')}>Créditos das imagens</a>.</p>
+    </footer>
+  </body>
+</html>
