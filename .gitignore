@@ -9,3 +9,6 @@ data/parquet/
 data/*.duckdb
 
 analises_privadas/
+
+# página de uso interno (só no computador local)
+src/pages/interno/

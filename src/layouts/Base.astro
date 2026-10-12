@@ -17,7 +17,11 @@ const { titulo, descricao = 'Dados públicos do TSE e do IBGE sobre as eleiçõe
   </head>
   <body>
     <header class="topo">
-      <a class="marca" href={href('')}>ApuraSP</a>
+      <div class="marca-grupo" style="display: inline-flex; align-items: center; gap: 0.65rem;">
+        <a class="marca" href={href('')}>ApuraSP</a>
+        <img class="marca-bandeira" src={href('bandeira-sp.svg')} alt="Bandeira de São Paulo" style="height: 20px; width: 30px; object-fit: contain; border-radius: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); vertical-align: middle;" />
+        <span class="marca-autor" style="font-size: 0.85rem; font-weight: 500; color: #475569; border-left: 1px solid #cbd5e1; padding-left: 0.65rem; white-space: nowrap;">André L Silva | 2028/30</span>
+      </div>
       <nav aria-label="Principal">
         <a href={href('')} aria-current={atual === 'mapa' ? 'page' : undefined}>Mapa</a>
         <a href={href('painel/')} aria-current={atual === 'painel' ? 'page' : undefined}>Painel do eleitorado</a>

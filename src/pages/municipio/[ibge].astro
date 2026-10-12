@@ -1,6 +1,8 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Barras from '../../components/Barras.astro';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import Empilhada from '../../components/Empilhada.astro';
 import { href } from '../../lib/url';
 import { listarIbge, carregar, simbolos } from '../../lib/dados';
@@ -24,6 +26,7 @@ const pre = m.prefeito_2024;
 const dep = m.deputados ?? {};
 const esp = m.espectro?.dados ?? {};
 const res = m.resultados ?? {};
+const internoOk = import.meta.env.DEV && existsSync(join(process.cwd(), 'src', 'pages', 'interno'));
 const NOME_CARGO = { presidente: 'Presidente', governador: 'Governador', senador: 'Senador', prefeito: 'Prefeito' };
 const blocosMaj = [
   ['2026', 'Eleição de 2026', ['presidente', 'governador', 'senador']],
@@ -87,6 +90,11 @@ const linhasEsp = cargos.flatMap((cargo) => anos.map((ano) => ({ cargo, ano, r: 
       </div>
     </header>
 
+    {internoOk && (
+      <p style="background:#FBEBD9;border-left:4px solid #C9650F;padding:10px 14px;margin:0 0 1.2rem">
+        <b>Uso interno (só no seu computador):</b> <a href={href(`interno/rede/?m=${m.ibge}`)}>abrir a planilha de rede por bairro</a>
+      </p>
+    )}
     <section aria-labelledby="h-num">
       <h2 id="h-num">Números oficiais</h2>
       <dl class="grade">
