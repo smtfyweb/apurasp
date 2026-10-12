@@ -123,7 +123,7 @@ for ano, cargos in CARGOS.items():
                 cands = [[sq, d["c"][sq][0], part.get((ano, sq)), d["c"][sq][1]] for sq in ordem]
                 chave = f"{ano}|{CHAVE[cargo]}{turno}"
                 V[m][chave] = {"t": turno, "val": vv[0], "br": vv[1], "nu": vv[2], "c": cands, "v": mat}
-                P[m][chave] = {"t": turno, "val": vv[0], "p": plist, "pv": pmat, "c": cands[:K_MICRO], "v": mat[:K_MICRO]}
+                P[m][chave] = {"t": turno, "val": vv[0], "p": plist, "pv": pmat}
                 ok += sum(1 for k in valm[m] if k in pos); tot_l += len(valm[m]); n_mun += 1
             print(f"   {rot}: {n_mun} municípios | locais com voto casados com o cadastro de locais: {ok:,} de {tot_l:,}")
 

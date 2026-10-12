@@ -88,7 +88,7 @@ function montar(sel: HTMLSelectElement): void {
   const abrir = () => {
     if (btn.disabled) return;
     aberto = true; ul.hidden = false; btn.setAttribute('aria-expanded', 'true');
-    desenhar();
+    desenhar(); ul.scrollTop = 0;
     ativo = ops.findIndex((o) => o.v === valor() && !o.d);
     if (ativo < 0) ativo = ops.findIndex((o) => !o.d);
     marcar(true);

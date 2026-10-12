@@ -1,7 +1,8 @@
+import os
 import json, pathlib, re, html, time, urllib.parse, csv, io, collections, requests
 from PIL import Image
 
-UA = {"User-Agent": "ApuraSP/0.1 (projeto de pesquisa eleitoral; contato: smtfy02@gmail.com)"}
+UA = {"User-Agent": "ApuraSP/0.1 (projeto de pesquisa eleitoral; contato: " + os.environ.get("APURASP_CONTATO", "nao informado") + ")"}
 API = "https://commons.wikimedia.org/w/api.php"
 LARG_API = 250   # largura padrão do Wikimedia: tamanhos fora da lista padrão são limitados (HTTP 429)
 LARG = 160       # largura final salva no site

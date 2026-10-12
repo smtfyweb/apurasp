@@ -91,7 +91,7 @@ def bloco(partidos, cands, val, turno, st=None, w=None):
            "e": [round(100 * cats.get(c, 0) / tot, 1) for c in CATS + ["sem classificação"]],
            "c": [[n_, num, p, v, round(100 * v / den, 1), el] for n_, num, p, el, v in cands],
            "p": [[p, v, round(100 * v / den, 1)] for p, v in top]}
-    if st: out["s"] = sorted(st.items(), key=lambda x: -x[1])[:5]; out["cad"] = sum(st.values())
+    if st: out["s"] = sorted(st.items(), key=lambda x: -x[1])[:15]; out["cad"] = sum(st.values())
     return out
 
 res = {"estado": {}, "m": {}}

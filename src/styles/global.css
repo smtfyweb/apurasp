@@ -309,3 +309,10 @@ button.abrir.sec { border: 1px solid var(--tinta); }
 .sl-lista small { color: var(--tinta-suave); font-size: .8rem; }
 .sl-grupo { font-size: .8rem; font-weight: 600; color: var(--tinta-suave); padding: 8px 10px 2px; cursor: default; }
 .sl-grupo:not(:first-child) { margin-top: 4px; border-top: 1px solid var(--linha); }
+
+/* mapa do município no mesmo padrão do mapa do estado */
+#svg-micro { background: none; border: 0; border-radius: 0; max-height: calc(100vh - 110px); }
+#svg-micro .ponto { display: none; }
+#svg-micro.ver-pontos .ponto { display: inline; }
+.check { display: inline-flex; gap: 8px; align-items: center; font-size: .92rem; margin-left: auto; cursor: pointer; }
+.check input { width: 16px; height: 16px; accent-color: var(--confirma); }

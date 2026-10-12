@@ -3,15 +3,16 @@ import duckdb
 con = duckdb.connect("data/apurasp.duckdb")
 P = "data/parquet"
 VIEWS = {
- "v_cand":          "consulta_cand/consulta_cand_*_SP.parquet",
- "v_vagas":         "consulta_vagas/consulta_vagas_*_SP.parquet",
- "v_perfil_mun":    "perfil_eleitorado/perfil_eleitorado_*_SP.parquet",
+ "v_cand":          "consulta_cand/consulta_cand_*.parquet",
+ "v_vagas":         "consulta_vagas/consulta_vagas_*.parquet",
+ "v_perfil_mun":    "perfil_eleitorado/perfil_eleitorado_*.parquet",
  "v_perfil_secao":  "perfil_eleitor_secao/perfil_eleitor_secao_*_SP.parquet",
  "v_locais":        "eleitorado_locais_votacao/eleitorado_local_votacao_*.parquet",
  "v_votos_secao":   "votacao_secao/votacao_secao_*_SP.parquet",
  "v_votos_cand":    "votacao_candidato_munzona/votacao_candidato_munzona_*.parquet",
  "v_votos_partido": "votacao_partido_munzona/votacao_partido_munzona_*.parquet",
  "v_detalhe":       "detalhe_votacao_munzona/detalhe_votacao_munzona_*.parquet",
+ "v_comparecimento": "perfil_comparecimento_abstencao/perfil_comparecimento_abstencao_*.parquet",
 }
 for nome, padrao in VIEWS.items():
     try:

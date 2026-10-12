@@ -26,7 +26,7 @@ const majoritarios = [['presidente', 'Presidente', '2022,2026'], ['governador', 
       <p>O mapa mostra quem venceu em cada um dos 645 municípios, de 2022 até hoje. Escolha a eleição, o cargo e o que pintar. Clique num município, ou busque pelo nome, para ver o mapa dele por local de votação.</p>
       <div class="campo">
         <label for="sel-ano">Eleição</label>
-        <select id="sel-ano"><option value="2026" selected>2026</option><option value="2024">2024</option><option value="2022">2022</option></select>
+        <select id="sel-ano"><option value="2026" selected>2026, eleição geral</option><option value="2024">2024, eleição municipal</option><option value="2022">2022, eleição geral</option></select>
       </div>
       <div class="campo">
         <label for="sel-cargo">Cargo</label>
@@ -64,7 +64,7 @@ const majoritarios = [['presidente', 'Presidente', '2022,2026'], ['governador', 
       <details class="como">
         <summary>Como usar o mapa</summary>
         <ol>
-          <li>Escolha a eleição e o cargo. Cargos sem dados na eleição escolhida aparecem apagados na lista.</li>
+          <li>Escolha a eleição e o cargo. A lista mostra só os cargos que existem naquela eleição: em 2022 e 2026, presidente, governador, senador e deputados; em 2024, prefeito e vereador.</li>
           <li>Escolha o que pintar: o partido vencedor ou a posição média no espectro.</li>
           <li>Passe o mouse sobre um município, ou toque nele, para ver os números no painel à direita.</li>
           <li>Clique no município, ou busque o nome, para abrir o mapa dele dividido por local de votação. O botão “Voltar ao estado” traz o mapa inteiro de volta.</li>
@@ -78,6 +78,7 @@ const majoritarios = [['presidente', 'Presidente', '2022,2026'], ['governador', 
       <div id="foco-barra" class="foco-barra" hidden>
         <button type="button" id="voltar" class="btn-ghost">Voltar ao estado</button>
         <span id="foco-nome" class="foco-nome"></span>
+        <label class="check"><input type="checkbox" id="ver-pontos" /> Mostrar os locais de votação</label>
       </div>
       <svg id="svg-estado" viewBox={viewBox} role="img" aria-label="Mapa do estado de São Paulo dividido em municípios. Use a busca para escolher um município pelo teclado.">
         {paths.map((p: any) => <path d={p.d} data-i={p.id}></path>)}
@@ -156,6 +157,8 @@ const majoritarios = [['presidente', 'Presidente', '2022,2026'], ['governador', 
   let vista: Vista | null = null;
   let siteFixo: number | null = null;
   let notas: Record<string, [number | null, string]> | null = null;
+  let topo: any = null;
+  let falhaCarga = '';
 
   const esc = (s: unknown) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } as Record<string, string>)[c]);
   const n0 = (x: number | null | undefined) => (x == null ? '—' : Math.round(x).toLocaleString('pt-BR'));
@@ -164,7 +167,7 @@ const majoritarios = [['presidente', 'Presidente', '2022,2026'], ['governador', 
   const oc = (el: Element | null, v: boolean) => { if (el) { if (v) el.setAttribute('hidden', ''); else el.removeAttribute('hidden'); } };
   const regMun = (i: string) => dados.m[i]?.d?.[estado.ano]?.[estado.cargo];
   const vencedor = (r: Reg) => r.w ?? r.p[0]?.[0];
-  const jget = async (rel: string) => { const r = await fetch(base + rel); if (!r.ok) throw new Error(String(r.status)); return r.json(); };
+  const jget = async (rel: string) => { const r = await fetch(base + rel); if (!r.ok) throw new Error(`${rel}: HTTP ${r.status}`); try { return await r.json(); } catch (e) { throw new Error(`${rel}: JSON inválido (${String(e).slice(0, 60)})`); } };
   const mn = (a: number[]) => a.reduce((m, v) => (v < m ? v : m), Infinity);
   const mx = (a: number[]) => a.reduce((m, v) => (v > m ? v : m), -Infinity);
 
@@ -175,10 +178,11 @@ const majoritarios = [['presidente', 'Presidente', '2022,2026'], ['governador', 
   // cargos sem dados na eleição escolhida ficam apagados na lista
   function ajustarCargos() {
     const ops = Array.from(selCargo.querySelectorAll<HTMLOptionElement>('option'));
-    const ok = (o: HTMLOptionElement) => (o.dataset.anos ?? '').split(',').includes(estado.ano) && !!dados.estado?.[estado.ano]?.[o.value];
+    const aplica = (o: HTMLOptionElement) => (o.dataset.anos ?? '').split(',').includes(estado.ano);
+    const ok = (o: HTMLOptionElement) => aplica(o) && !!dados.estado?.[estado.ano]?.[o.value];
     for (const o of ops) {
-      const v = ok(o); o.disabled = !v;
-      if (v) delete o.dataset.nota; else o.dataset.nota = `sem dados em ${estado.ano}`;
+      o.hidden = !aplica(o); o.disabled = aplica(o) && !ok(o);
+      if (o.disabled) o.dataset.nota = `sem dados em ${estado.ano}`; else delete o.dataset.nota;
     }
     if (!ops.some((o) => ok(o) && o.value === estado.cargo)) {
       const alvo = ops.find((o) => ok(o) && o.value === (estado.ano === '2024' ? 'vereador' : 'federal')) ?? ops.find(ok);
@@ -244,7 +248,7 @@ const majoritarios = [['presidente', 'Presidente', '2022,2026'], ['governador', 
 
   function blocoRegistro(r: Reg, ehEstado: boolean): string {
     const cands = r.c.map(([nome, num, p, v, pc, el]) =>
-      `<li style="--cor:${corPartido(p)}"><span class="nome">${esc(titulo(nome))}${el ? '<span class="tag">eleito(a)</span>' : ''}</span><span class="pc">${d1(pc)}%</span><span class="meta">${esc(p)}, ${esc(num)}</span><span class="vt">${n0(v)} votos</span></li>`).join('');
+      `<li style="--cor:${corPartido(p)}"><span class="nome">${esc(titulo(nome))}</span><span class="pc">${d1(pc)}%</span><span class="meta">${esc(p)}, ${esc(num)}${el ? '<span class="tag">eleito(a)</span>' : ''}</span><span class="vt">${n0(v)} votos</span></li>`).join('');
     const cadeiras = r.s
       ? `<h3>Cadeiras ${ehEstado ? 'nas Câmaras do estado' : 'na Câmara'}${r.cad ? ` (${n0(r.cad)})` : ''}</h3><ul class="rank">` +
         r.s.map(([p, n]) => `<li><i style="background:${corPartido(p)}"></i>${esc(p)}<span style="margin-left:auto">${n0(n)}</span></li>`).join('') + '</ul>' : '';
@@ -361,7 +365,7 @@ const majoritarios = [['presidente', 'Presidente', '2022,2026'], ['governador', 
     const av: string[] = [];
     if (!xs.length) {
       svgMicro.innerHTML = '';
-      microAviso.textContent = !micro ? 'Ainda não há dados por local de votação para este município.' : 'Não há geometria nem coordenadas para desenhar este município.';
+      microAviso.textContent = (!micro ? 'Ainda não há dados por local de votação para este município.' : 'Não há geometria nem coordenadas para desenhar este município.') + (falhaCarga ? ` Falha ao carregar: ${falhaCarga}.` : '');
       vista = null; legenda.innerHTML = ''; escreverRegra('Sem dados para desenhar o mapa deste município.'); mostrar(null); return;
     }
     const x0 = mn(xs), x1 = mx(xs), y0 = mn(ys), y1 = mx(ys);
@@ -372,9 +376,9 @@ const majoritarios = [['presidente', 'Presidente', '2022,2026'], ['governador', 
       const del = Delaunay.from(sites, (s) => s.x, (s) => s.y);
       const vor = del.voronoi([x0 - pad, y0 - pad, x1 + pad, y1 + pad]);
       cellD = sites.map((_, i) => vor.renderCell(i) ?? '');
-      celulas = cellD.map((d, i) => (d ? `<path data-s="${i}" d="${d}" fill="${cores[i]}" stroke="#fff" stroke-width="${(sw * 0.5).toFixed(6)}"></path>` : '')).join('');
+      celulas = cellD.map((d, i) => (d ? `<path data-s="${i}" d="${d}" fill="${cores[i]}" stroke="#EDF0F2" stroke-width="${(sw * 0.5).toFixed(6)}"></path>` : '')).join('');
     }
-    const pontos = sites.map((s) => `<circle cx="${s.x.toFixed(5)}" cy="${s.y.toFixed(5)}" r="${(sw * 1.5).toFixed(6)}" fill="#fff" stroke="#1E2A44" stroke-width="${(sw * 0.5).toFixed(6)}" pointer-events="none"></circle>`).join('');
+    const pontos = sites.map((s) => `<circle class="ponto" cx="${s.x.toFixed(5)}" cy="${s.y.toFixed(5)}" r="${(sw * 1.5).toFixed(6)}" fill="#fff" stroke="#1E2A44" stroke-width="${(sw * 0.5).toFixed(6)}" pointer-events="none"></circle>`).join('');
     svgMicro.setAttribute('viewBox', `${x0 - pad} ${y0 - pad} ${w + 2 * pad} ${h + 2 * pad}`);
     svgMicro.setAttribute('aria-label', `Mapa de ${dados.m[foco]?.n ?? ''} por local de votação, ${NOMES[cargo]} ${ano}`);
     svgMicro.innerHTML = `<defs><clipPath id="cpm"><path d="${caminho}" clip-rule="evenodd"></path></clipPath></defs>` +
@@ -408,6 +412,14 @@ const majoritarios = [['presidente', 'Presidente', '2022,2026'], ['governador', 
     mostrar(null);
   }
 
+  function topCandidatos(s: Site, chave: string | null): [string, string | null, number][] | null {
+    const blk = chave ? topo?.t?.[estado.ano]?.[chave] : null;
+    if (!blk || !vista) return null;
+    const soma = new Map<number, number>();
+    for (const j of s.idx) for (const [ci, v] of (blk.l[vista.locs[j].id] ?? []) as [number, number][]) soma.set(ci, (soma.get(ci) ?? 0) + v);
+    return [...soma.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5).map(([ci, v]) => [blk.c[ci][0], blk.c[ci][1] || null, v] as [string, string | null, number]);
+  }
+
   function mostrarSite(si: number) {
     if (!vista) return;
     const { locs, sites, bloco, valS, partS, cellD, chave } = vista;
@@ -422,13 +434,13 @@ const majoritarios = [['presidente', 'Presidente', '2022,2026'], ['governador', 
     if (!bloco) votos = `<p class="pequena">${esc(semVotosMsg(estado.ano, estado.cargo))}</p>`;
     else if (val < MIN_VALIDOS) votos = '<p class="pequena">Poucos votos neste local: os números ficam ocultos para proteger o sigilo do voto.</p>';
     else {
-      const cs = bloco.c.map((c, ci) => [c[1], c[2], sv(bloco.v[ci], s)] as [string, string | null, number]).sort((a, b) => b[2] - a[2]).slice(0, 5);
+      const cs0 = topCandidatos(s, chave); const cs: [string, string | null, number][] = cs0 ?? [];
       const ps = bloco.p.map(([sg], pi) => [sg, partS[si][pi]] as [string, number]).sort((a, b) => b[1] - a[1]).slice(0, 5);
       votos = (SEM_PARTIDOS.has(estado.cargo) ? '' : `<h3>Partidos mais votados no local</h3><ul class="rank">` +
           ps.map(([sg, v]) => `<li><i style="background:${corPartido(sg)}"></i>${esc(sg)} <small>${n0(v)} votos</small><span>${d1((100 * v) / val)}%</span></li>`).join('') + '</ul>') +
         `<h3>Candidatos mais votados no local</h3><ul class="cands">` +
         cs.map(([nm, p, v]) => `<li style="--cor:${corPartido(p)}"><span class="nome">${esc(titulo(nm))}</span><span class="pc">${d1((100 * v) / val)}%</span><span class="meta">${esc(p ?? '')}</span><span class="vt">${n0(v)} votos</span></li>`).join('') + '</ul>' +
-        '<p class="pequena">Percentuais sobre os votos válidos do local.</p>';
+        `<p class="pequena">${cs0 ? 'Percentuais sobre os votos válidos do local.' : 'Os candidatos mais votados deste local ainda não foram gerados (script 27).'}</p>`;
     }
     const m = foco ? dados.m[foco] : null;
     painel.innerHTML = `<h2>${esc(nome)}</h2><p class="pequena" style="margin:0 0 .5rem">${esc(bairros)}${m ? `, ${esc(m.n)}` : ''}. ${NOMES[estado.cargo]}, ${estado.ano}.</p>
@@ -442,15 +454,17 @@ const majoritarios = [['presidente', 'Presidente', '2022,2026'], ['governador', 
   async function entrarMunicipio(i: string) {
     if (!dados.m[i]) return;
     foco = i; fixado = null; siteFixo = null; micro = null; contorno = null; vista = null;
-    focoNome.textContent = dados.m[i].n;
+    focoNome.textContent = dados.m[i].n; busca.value = dados.m[i].n;
     oc(focoBarra, false); oc(svgEstado, true); oc(microBox, false); oc(perfilBox, false);
     opPerfil.hidden = false;
     svgMicro.innerHTML = ''; microAviso.textContent = 'Carregando o mapa do município…';
-    const [g, mc] = await Promise.allSettled([jget(`data/geo/mun/${i}.json`), jget(`data/micro/${i}.json`)]);
+    const [g, mc, tp] = await Promise.allSettled([jget(`data/geo/mun/${i}.json`), jget(`data/micro/${i}.json`), jget(`data/topo/${i}.json`)]);
     if (!notas) { try { notas = await jget('data/partidos.json'); } catch { notas = {}; } }
     if (foco !== i) return;
+    falhaCarga = [g, mc].filter((x) => x.status === 'rejected').map((x) => String((x as PromiseRejectedResult).reason?.message ?? 'erro')).join(' | ');
     contorno = g.status === 'fulfilled' ? g.value : null;
     micro = mc.status === 'fulfilled' ? mc.value : null;
+    topo = tp.status === 'fulfilled' ? tp.value : null;
     renderMicro(); sincronizarUrl();
     focoNome.scrollIntoView({ block: 'nearest' });
   }
@@ -497,6 +511,7 @@ const majoritarios = [['presidente', 'Presidente', '2022,2026'], ['governador', 
     if (b?.dataset.zoom) entrarMunicipio(b.dataset.zoom);
   });
   document.getElementById('voltar')?.addEventListener('click', sairMunicipio);
+  document.getElementById('ver-pontos')?.addEventListener('change', (e) => svgMicro.classList.toggle('ver-pontos', (e.target as HTMLInputElement).checked));
   busca.addEventListener('change', () => {
     const i = porNome.get(sem(busca.value));
     if (i) { entrarMunicipio(i); painel.focus(); }
